@@ -4,13 +4,13 @@ import "./globals.css";
 import '@mantine/core/styles.css';
 
 import { ColorSchemeScript, createTheme, MantineProvider } from '@mantine/core';
+import Home from "./home";
 
 export const metadata: Metadata = {
   title:'Amplitude',
   applicationName:'Amplitude',
   creator:'PonyTrap'
 }
-
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -24,7 +24,7 @@ const geistMono = localFont({
 });
 
 const theme = createTheme({
-  fontFamily:'Roboto',
+  fontFamily:'roboto',
   primaryColor: 'dark',
   primaryShade:{dark:5}
 });
@@ -36,11 +36,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" style={{height:'100%'}}>
-      <head><ColorSchemeScript/></head>
+      <head><ColorSchemeScript defaultColorScheme="dark"/></head>
       <body style={{minHeight:'100%',display:'flex',justifyContent:'center',alignItems:'center'}}
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-      <MantineProvider theme={theme} forceColorScheme="dark">{children}</MantineProvider>
+      <MantineProvider theme={theme} forceColorScheme="dark">
+        <Home>
+         {children}
+        </Home>
+        </MantineProvider>
       </body>
     </html>
   );

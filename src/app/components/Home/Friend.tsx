@@ -13,12 +13,12 @@ export default function Friend()
             <Text>online</Text>
         </Flex>
         <Space miw={0} w="100%"/>
-        <Flex mr={20}>
+        <Flex mr={20} gap={10}>
             <Tooltip label="Message">
-                <ActionIcon radius='xl' size={45}><IconMessage/></ActionIcon>
+                <ActionIcon variant='light' radius='xl' size={45}><IconMessage/></ActionIcon>
             </Tooltip>
             <Tooltip label="More">
-                <ActionIcon radius='xl' size={45}><IconDotsVertical/></ActionIcon>
+                <ActionIcon variant='light' radius='xl' size={45}><IconDotsVertical/></ActionIcon>
             </Tooltip>
         </Flex>
     </Flex>
