@@ -3,7 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import '@mantine/core/styles.css';
 
-import { ColorSchemeScript, MantineProvider } from '@mantine/core';
+import { ColorSchemeScript, createTheme, MantineProvider } from '@mantine/core';
 
 export const metadata: Metadata = {
   title:'Amplitude',
@@ -23,6 +23,12 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
+const theme = createTheme({
+  fontFamily:'Roboto',
+  primaryColor: 'dark',
+  primaryShade:{dark:5}
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -34,7 +40,7 @@ export default function RootLayout({
       <body style={{minHeight:'100%',display:'flex',justifyContent:'center',alignItems:'center'}}
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-      <MantineProvider defaultColorScheme="dark">{children}</MantineProvider>
+      <MantineProvider theme={theme} forceColorScheme="dark">{children}</MantineProvider>
       </body>
     </html>
   );
