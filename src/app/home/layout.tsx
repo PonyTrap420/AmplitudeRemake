@@ -1,7 +1,8 @@
-import { Card,Text,Container, Flex, TextInput, ScrollArea, Button, Popover, PopoverTarget, Tooltip, ActionIcon, PopoverDropdown, Title, Indicator, Avatar, Space } from "@mantine/core"
+import { Card,Text,Container, Flex, TextInput, ScrollArea, Button, ActionIcon, Indicator, Avatar, Space } from "@mantine/core"
 import { IconFriends, IconShoppingCart, IconUserFilled, IconPlus, IconMicrophoneFilled, IconHeadset, IconSettingsFilled } from "@tabler/icons-react"
 import DirectMessage from "../components/Home/DirectMessage";
 import Link from "next/link";
+import CreateDM from "../components/CreateDM";
 
 export default function HomeLayout({
     children,
@@ -15,7 +16,7 @@ export default function HomeLayout({
 
     return (
         <Card w='100%' h="100%" p={0}>
-            <Flex w="100%" h="100%">
+            <Flex  w="100%" h="100%">
                 <Flex pos='relative' miw={300} maw={300} h="100%" w="20%" align='center' direction='column'>
                     <Container mih={60} style={{borderBottom:'2px solid var(--mantine-color-dark-9)'}} w="100%">
                     <TextInput styles={{input:{backgroundColor:'var(--mantine-color-dark-8)'}}} mt={11} placeholder="Find or start a conversation"/>
@@ -44,22 +45,11 @@ export default function HomeLayout({
                     
                         <Flex mt={20} p={10} justify='space-between'>
                             <Text>DIRECT MESSAGES</Text>
-                            <Popover>
-                                <PopoverTarget>
-                                    <Tooltip label="Create DM">
-                                    <ActionIcon c='gray' variant='transparent'>
-                                        <IconPlus/>
-                                    </ActionIcon>
-                                    </Tooltip>
-                                </PopoverTarget>
-                                <PopoverDropdown>
-                                    <Flex direction='column' w={450} h={450}>
-                                        <Title size='h2' fw='600'>Select Friends</Title>
-                                        <Text>You can add 9 more friends.</Text>
-                                        <TextInput styles={{input:{backgroundColor:'var(--mantine-color-dark-8)'}}} mt={20} placeholder="Type the username of a friend"/>
-                                        </Flex>
-                                </PopoverDropdown>
-                            </Popover>
+                            <CreateDM>
+                                <ActionIcon c='gray' variant='transparent'>
+                                    <IconPlus/>
+                                </ActionIcon>
+                            </CreateDM>
                         </Flex>
 
                         <Flex direction='column' gap={5}>

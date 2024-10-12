@@ -8,7 +8,7 @@ export default function Server()
 {
     const {hovered, ref} = useHover();
 
-    return <Avatar size={60} ref={ref} style={{transition:'0.2s ease-out'}} radius={hovered?'lg':'xl'}>
+    return <Avatar size={60} ref={ref} style={{transition:'0.2s ease-out',cursor:'pointer'}} radius={hovered?'lg':'xl'}>
         <IconUser size={40}/>
     </Avatar>
 }
