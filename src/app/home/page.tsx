@@ -1,5 +1,5 @@
 import { Text, ActionIcon, Button, Card, Container, Divider, Flex, Popover, PopoverDropdown, PopoverTarget, ScrollArea, TextInput, Title, Tooltip, Avatar, Indicator, Space } from "@mantine/core";
-import { IconFriends, IconShoppingCart, IconUserFilled, IconPlus, IconSearch, IconLine, IconMicrophone, IconHeadset, IconSettings, IconSettingsFilled, IconMicrophoneFilled } from "@tabler/icons-react";
+import { IconFriends, IconShoppingCart, IconUserFilled, IconPlus, IconSearch, IconHeadset, IconSettingsFilled, IconMicrophoneFilled } from "@tabler/icons-react";
 import DirectMessage from "../components/Home/DirectMessage";
 import Friend from "../components/Home/Friend";
 
@@ -53,7 +53,7 @@ export default function Page(){
                         </Popover>
                     </Flex>
 
-                    <Flex direction='column' gap={10}>
+                    <Flex direction='column' gap={5}>
                     {dms}
                     </Flex>
                 </ScrollArea>
@@ -105,7 +105,7 @@ export default function Page(){
                         </Flex>
                         <Text mt={20} mb={10}>Online - 37</Text>
                         <ScrollArea>
-                        <Flex gap={10} direction='column'>
+                        <Flex direction='column'>
                             {friends}
                         </Flex>
                         </ScrollArea>

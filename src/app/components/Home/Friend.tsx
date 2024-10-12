@@ -1,10 +1,15 @@
-import { ActionIcon,Text, Avatar, Divider, Flex, Indicator, Space, Tooltip } from "@mantine/core";
+'use client'
+
+import { ActionIcon,Text, Avatar, Flex, Indicator, Space, Tooltip } from "@mantine/core";
+import { useHover } from "@mantine/hooks";
 import { IconMessage, IconDotsVertical } from "@tabler/icons-react";
 
 export default function Friend()
 {
+    const {hovered, ref} = useHover();
+
     return <>
-    <Flex gap={15}>
+    <Flex style={{borderBottom:'2px solid #474747'}} ref={ref} p={10} gap={15} bg={hovered?'dark.4':''}>
         <Indicator processing withBorder size={14} color='green' offset={8} position='bottom-end'>
         <Avatar size={45}></Avatar>
         </Indicator>
@@ -15,13 +20,12 @@ export default function Friend()
         <Space miw={0} w="100%"/>
         <Flex mr={20} gap={10}>
             <Tooltip label="Message">
-                <ActionIcon variant='light' radius='xl' size={45}><IconMessage/></ActionIcon>
+                <ActionIcon bg={hovered?'dark.6':''} variant='light' radius='xl' size={45}><IconMessage/></ActionIcon>
             </Tooltip>
             <Tooltip label="More">
-                <ActionIcon variant='light' radius='xl' size={45}><IconDotsVertical/></ActionIcon>
+                <ActionIcon bg={hovered?'dark.6':''} variant='light' radius='xl' size={45}><IconDotsVertical/></ActionIcon>
             </Tooltip>
         </Flex>
     </Flex>
-    <Divider size={3} orientation='horizontal'/>
     </>
 }
