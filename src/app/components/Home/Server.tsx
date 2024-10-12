@@ -1,9 +1,14 @@
+'use client'
+
 import { Avatar } from "@mantine/core";
+import { useHover } from "@mantine/hooks";
 import { IconUser } from "@tabler/icons-react";
 
 export default function Server()
 {
-    return <Avatar size={60} radius='xl'>
+    const {hovered, ref} = useHover();
+
+    return <Avatar size={60} ref={ref} style={{transition:'0.2s ease-out'}} radius={hovered?'lg':'xl'}>
         <IconUser size={40}/>
     </Avatar>
 }

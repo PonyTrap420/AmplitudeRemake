@@ -9,7 +9,7 @@ export default function Friend()
     const {hovered, ref} = useHover();
 
     return <>
-    <Flex style={{borderBottom:'2px solid #474747'}} ref={ref} p={10} gap={15} bg={hovered?'dark.4':''}>
+    <Flex style={{borderBottom:'2px solid #474747', cursor:'pointer'}} ref={ref} p={10} gap={15} bg={hovered?'dark.4':''}>
         <Indicator processing withBorder size={14} color='green' offset={8} position='bottom-end'>
         <Avatar size={45}></Avatar>
         </Indicator>

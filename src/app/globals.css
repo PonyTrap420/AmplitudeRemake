@@ -25,3 +25,21 @@ body {
     text-wrap: balance;
   }
 }
+
+p, div{
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
+.logo{
+  padding: 10px;
+  background-color: #161616;
+  border-radius: 100%;
+  transition: all .2s ease;
+}
+
+.logo:hover{
+  background-color: #1a56d9;
+  border-radius: 35%;
+}

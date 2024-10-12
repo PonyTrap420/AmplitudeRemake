@@ -8,7 +8,7 @@ export default function DirectMessage()
 {
     const {hovered, ref} = useHover();
 
-    return <Flex align='center' p={5} bg={hovered?'dark.4':''} ref={ref} gap={15}>
+    return <Flex style={{cursor:'pointer'}} mr={10} align='center' p={5} bg={hovered?'dark.4':''} ref={ref} gap={15}>
         <Indicator processing withBorder size={14} color='green' offset={8} position='bottom-end'>
         <Avatar size={45}></Avatar>
         </Indicator>
