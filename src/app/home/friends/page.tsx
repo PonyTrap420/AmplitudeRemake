@@ -9,7 +9,7 @@ export default function Friends(){
      });
 
     return <Flex direction='column' bg='var(--mantine-color-dark-5)' h="100%" w="100%" >
-    <Flex pr={0} mah={60} style={{borderBottom:'2px solid var(--mantine-color-dark-9)'}} gap={20} p={10} w="100%" align='center' justify='start'>
+    <Flex pr={0} mah={60} style={{borderBottom:'2px solid var(--mantine-color-dark-7)'}} gap={20} p={10} w="100%" align='center' justify='start'>
         <Flex align='center' ml={10} gap={10}>
             <IconFriends size={30}/>
             <Text fz='h4' fw="bold">Friends</Text>

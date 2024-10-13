@@ -18,7 +18,7 @@ export default function HomeLayout({
         <Card w='100%' h="100%" p={0}>
             <Flex  w="100%" h="100%">
                 <Flex pos='relative' miw={300} maw={300} h="100%" w="20%" align='center' direction='column'>
-                    <Container mih={60} style={{borderBottom:'2px solid var(--mantine-color-dark-9)'}} w="100%">
+                    <Container mih={60} style={{borderBottom:'2px solid var(--mantine-color-dark-7)'}} w="100%">
                     <TextInput styles={{input:{backgroundColor:'var(--mantine-color-dark-8)'}}} mt={11} placeholder="Find or start a conversation"/>
                     </Container>
 
@@ -57,7 +57,7 @@ export default function HomeLayout({
                         </Flex>
                     </ScrollArea>
 
-                    <Flex style={{zIndex:201}} pos='absolute' bottom={0} align='center' bg='dark.7' gap={10} p={15} w="100%">
+                    <Flex style={{zIndex:201}} pos='absolute' bottom={2} align='center' bg='dark.7' gap={10} p={10} w="100%">
                         <Indicator withBorder size={14} color='red' offset={8} position='bottom-end'>
                         <Avatar size={45}></Avatar>
                         </Indicator>
