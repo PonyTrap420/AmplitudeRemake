@@ -1,9 +1,9 @@
 import { Flex,Text, Card, ScrollArea, Divider } from "@mantine/core";
 import { IconBrandDiscordFilled } from "@tabler/icons-react";
-import Server from "./components/Home/Server";
+import Server from "../components/Home/Server";
 import Link from "next/link";
 
-export default function Home({
+export default function MainLayout({
     children,
   }: Readonly<{
     children: React.ReactNode;
@@ -19,7 +19,7 @@ export default function Home({
         <Flex h="100%">   
                 <ScrollArea type='never' miw={100} maw={100} scrollbars='y'>
                     <Flex align='center' gap={10} direction='column'>
-                        <div className="logo">
+                        <div className="cursor-pointer transition-all duration-200 p-2.5 bg-[#161616] rounded-[100%] ease hover:bg-[#1a56d9] hover:rounded-[35%]">
                             <Link href="/">
                                 <IconBrandDiscordFilled color="white" size={50}/>
                             </Link>

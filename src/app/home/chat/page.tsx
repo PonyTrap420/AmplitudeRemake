@@ -1,6 +1,6 @@
 'use client'
 
-import CreateDM from "@/app/components/CreateDM";
+import CreateDM from "@/components/CreateDM";
 import { Avatar,Text, Flex, Indicator, ActionIcon, Space, TextInput, Box } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { IconInbox, IconHelpCircleFilled, IconSearch, IconPinnedFilled, IconCameraFilled, IconPhoneCall, IconUsersPlus, IconCirclePlusFilled, IconGif, IconMoodHappyFilled } from "@tabler/icons-react";

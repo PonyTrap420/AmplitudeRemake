@@ -1,5 +1,5 @@
-import CreateDM from "@/app/components/CreateDM";
-import Friend from "@/app/components/Home/Friend";
+import CreateDM from "@/components/CreateDM";
+import Friend from "@/components/Home/Friend";
 import { Flex,Text, Divider, Button, TextInput, ScrollArea, ActionIcon, Space } from "@mantine/core";
 import { IconFriends, IconHelpCircleFilled, IconInbox, IconMessagePlus, IconSearch } from "@tabler/icons-react";
 

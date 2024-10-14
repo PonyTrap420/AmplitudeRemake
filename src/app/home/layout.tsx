@@ -1,8 +1,8 @@
 import { Card,Text,Container, Flex, TextInput, ScrollArea, Button, ActionIcon, Indicator, Avatar, Space } from "@mantine/core"
 import { IconFriends, IconShoppingCart, IconUserFilled, IconPlus, IconMicrophoneFilled, IconHeadset, IconSettingsFilled } from "@tabler/icons-react"
-import DirectMessage from "../components/Home/DirectMessage";
+import DirectMessage from "../../components/Home/DirectMessage";
 import Link from "next/link";
-import CreateDM from "../components/CreateDM";
+import CreateDM from "../../components/CreateDM";
 
 export default function HomeLayout({
     children,
