@@ -35,6 +35,7 @@ type Thumbnail = {
 type Author = {
     id:string,
     username: string,
+    global_name:string,
     avatar: string,
     banner:string,
     accent_color: string,
