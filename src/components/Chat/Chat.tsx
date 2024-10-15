@@ -1,25 +1,42 @@
+'use client'
+
 import { Message } from "@/types/Message";
 import MessageBlock from "@/components/Chat/MessageBlock";
-import { Flex, ScrollArea, Text } from "@mantine/core";
+import { Divider, Flex, ScrollArea, Text } from "@mantine/core";
+import ContextMenu, { ContextMenuButton } from "../ContextMenu";
+import useContextMenu from "@/hooks/useContextMenu";
+import { IconCopy, IconCornerUpLeft, IconCornerUpRight, IconPencil, IconPinFilled } from "@tabler/icons-react";
 
-export default async function Chat() {
-  await new Promise(resolve => setTimeout(resolve, 300));
-  const data = await import("@/.mock/messages.json");
-  const messages: Message[] = data.default as unknown as Message[];
-  const reversedMessages = [...messages].reverse();
+export default function Chat({messages}:{messages:Message[]}) {
   let firstChecker = '';
+  const { clicked, setClicked, location, setLocation } = useContextMenu();
 
-  return (
-    <ScrollArea >
+  function ContextClicked(e: React.MouseEvent)
+  {
+    e.preventDefault();
+    const rect = e.currentTarget.getBoundingClientRect();
+    const scaleFactor = window.devicePixelRatio || 1;
+
+    console.log(rect);
+    console.log(e);
+    setClicked(true);
+    setLocation({
+      x: e.clientX-rect.left,
+      y: e.pageY - (170*(1/scaleFactor)),
+    });
+  }
+
+  return (<>
+    <ScrollArea>
      <Flex p={20} w="100%" direction='column'>
 
-      {reversedMessages.length > 0
-        ? reversedMessages.map(function (message: Message, index: number){
+      {messages.length > 0
+        ? messages.map(function (message: Message, index: number){
           const isFirst = message.author.id!=firstChecker;
           if(isFirst)
             firstChecker=message.author.id
 
-          return <MessageBlock isFirst={isFirst} key={index} message={message} />
+          return <MessageBlock onContextMenu={ContextClicked} isFirst={isFirst} key={index} message={message} />
       })
         : 
         <Text>No Messages</Text>
@@ -27,5 +44,19 @@ export default async function Chat() {
         
       </Flex>
     </ScrollArea>
+    {clicked?
+    <ContextMenu location={location}>
+      <ContextMenuButton text="Edit Message" rightSection={<IconPencil/>}/>
+      <ContextMenuButton text="Reply" rightSection={<IconCornerUpLeft/>}/>
+      <ContextMenuButton text="Forward" rightSection={<IconCornerUpRight/>}/>
+      <Divider orientation='horizontal'/>
+      <ContextMenuButton text="Copy Text" rightSection={<IconCopy/>}/>
+      <ContextMenuButton text="Pin Message" rightSection={<IconPinFilled/>}/>
+      <Divider orientation='horizontal'/>
+      <ContextMenuButton color={'red'} text="Delete Message" rightSection={<IconPinFilled/>}/>
+
+    </ContextMenu>:null
+    }
+  </>
   );
 }
