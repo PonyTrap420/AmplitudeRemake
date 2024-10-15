@@ -1,7 +1,7 @@
 'use client'
 
 import { Message } from "@/types/Message";
-import {  Avatar,Text, Flex, Space } from "@mantine/core";
+import {  Avatar,Text, Flex } from "@mantine/core";
 import { useEffect, useState } from "react";
 
 export default function MessageBlock({message,isFirst,onContextMenu} : {message:Message,isFirst:boolean,onContextMenu: (e: React.MouseEvent) => void })
@@ -22,6 +22,5 @@ export default function MessageBlock({message,isFirst,onContextMenu} : {message:
             </Flex>:null}
             <Text className="select-text font-sans">{message.content}</Text>
         </Flex>
-        <Space miw={0} w="30%"/>
     </Flex>)
 }
