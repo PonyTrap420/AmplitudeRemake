@@ -28,7 +28,7 @@ export default function Chat({messages}:{messages:Message[]}) {
 
   return (<>
     <ScrollArea>
-     <Flex p={20} w="100%" direction='column'>
+     <Flex p={20} pt={5} w="100%" direction='column'>
 
       {messages.length > 0
         ? messages.map(function (message: Message, index: number){
