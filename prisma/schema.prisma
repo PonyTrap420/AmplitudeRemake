@@ -1,0 +1,102 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Server {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+
+  owner       User       @relation("Owner", fields: [ownerId], references: [id])
+  ownerId     String     @db.ObjectId
+
+  membersIDs String[]   @db.ObjectId
+  members     User[]     @relation("Members",fields: [membersIDs], references: [id])
+  channels    Channel[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@map("servers")
+}
+
+model Channel {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  serverId   String     @db.ObjectId
+  server     Server     @relation(fields: [serverId], references: [id])
+  messages   Message[]
+  createdAt  DateTime   @default(now())
+
+  @@map("channels")
+}
+
+model Message {
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  content           String
+  timestamp         DateTime  @default(now())
+  edited_timestamp  DateTime?
+  authorId          String    @db.ObjectId
+  author            User      @relation("SentMessages", fields: [authorId], references: [id])
+  channelId         String?   @db.ObjectId
+  channel           Channel?  @relation(fields: [channelId], references: [id])
+  directMessage     Boolean   @default(false)
+  receiverId        String?   @db.ObjectId // Only for direct messages
+  receiver          User?     @relation("DirectMessage", fields: [receiverId], references: [id])
+  pinned            Boolean
+  mention_everyone  Boolean
+  mentions          String[]  // Array of User IDs represented as strings
+  attachments       String[]
+  embeds            Embed[]
+
+  @@map("messages")
+}
+
+model User {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  username     String
+  global_name  String
+  avatar       String
+  banner       String
+  accent_color String
+  banner_color String
+
+  sentMessages Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("DirectMessage")
+
+  serverIDs String[] @db.ObjectId
+  servers Server[] @relation("Members", fields: [serverIDs], references: [id])
+
+  ownedServers Server[] @relation("Owner")
+
+  @@map("users")
+}
+
+
+model Embed {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  type        String
+  url         String
+  title       String
+  description String
+  thumbnail   Thumbnail?
+  messageId   String    @db.ObjectId
+  message     Message   @relation(fields: [messageId], references: [id])
+
+  @@map("embeds")
+}
+
+model Thumbnail {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  url        String
+  proxy_url  String
+  width      Int
+  height     Int
+  embedId    String    @unique @db.ObjectId
+  embed      Embed     @relation(fields: [embedId], references: [id])
+
+  @@map("thumbnails")
+}

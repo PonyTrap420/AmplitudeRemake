@@ -1,24 +1,20 @@
 export type Message = {
     id: number
     channel_id:number,
-    author: Author,
+    author: User,
     pinned:boolean,
     meantion_everyone: boolean
 
     content:string;
-    mentions: UserID[];
+    mentions: number[];
     attachments: string[],
     embeds: Embed[]
     timestamp: Date,
     edited_timestamp: Date,
 }
 
-type UserID = {
-    id:number;
-}
-
 type Embed = {
-    type: 'link' | 'server',
+    type: 'link' | 'server' | 'video',
     url: string,
     title: string,
     description: string,
@@ -32,7 +28,7 @@ type Thumbnail = {
     height: number,
 }
 
-type Author = {
+type User = {
     id:string,
     username: string,
     global_name:string,
