@@ -38,7 +38,7 @@ model Message {
   id                String    @id @default(auto()) @map("_id") @db.ObjectId
   content           String
   timestamp         DateTime  @default(now())
-  edited_timestamp  DateTime?
+  editedTimestamp  DateTime?
   authorId          String    @db.ObjectId
   author            User      @relation("SentMessages", fields: [authorId], references: [id])
   channelId         String?   @db.ObjectId
@@ -47,7 +47,7 @@ model Message {
   receiverId        String?   @db.ObjectId // Only for direct messages
   receiver          User?     @relation("DirectMessage", fields: [receiverId], references: [id])
   pinned            Boolean
-  mention_everyone  Boolean
+  mentionEveryone  Boolean
   mentions          String[]  // Array of User IDs represented as strings
   attachments       String[]
   embeds            Embed[]
@@ -57,12 +57,15 @@ model Message {
 
 model User {
   id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  email        String    @unique
   username     String
-  global_name  String
-  avatar       String
-  banner       String
-  accent_color String
-  banner_color String
+  displayName  String?
+  password     String
+  dateOfBirth  DateTime
+  avatar       String?
+  banner       String?
+  accent_color String?
+  banner_color String?
 
   sentMessages Message[] @relation("SentMessages")
   receivedMessages Message[] @relation("DirectMessage")

@@ -1,18 +1,17 @@
 'use client'
 
-import { Box, Flex, Overlay, Title,Text, TextInput, Button } from "@mantine/core";
+import { Box, Flex, Overlay, Title,Text, TextInput, Button, PasswordInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconBlobFilled } from "@tabler/icons-react";
 import Link from "next/link";
-
-interface LoginValues {
-    email: string;
-    password: string;
-}
+import { loginUser } from "./actions";
+import { useRouter } from "next/navigation";
 
 const TextInputStyle = {input:{backgroundColor:'var(--mantine-color-dark-8)', border:0}, root:{height:70}};
 
 export default function Page(){
+    const router = useRouter();
+
     const form = useForm({
         initialValues: {
           email: '',
@@ -26,12 +25,23 @@ export default function Page(){
         },
       });
 
-    const handleSubmit = (values: LoginValues) => {    
-        console.log({
-          ...values,
-        });
-        
-        // Further processing like sending to the backend
+    const handleSubmit = async (values: {email:string, password:string}) => {    
+      try {
+        const response = await loginUser(values);
+  
+        form.setErrors({});
+  
+        if (response.errors) {
+          Object.keys(response.errors).forEach((field) => {
+            form.setFieldError(field, response.errors[field]);
+          });
+        } else {
+          console.log('User logged in successfully:', response.user);
+          router.push('/home/friends'); 
+        }
+      } catch{
+        form.setFieldError('email', 'Failed to login. Please try again.');
+      }
     };
 
     return <Flex pos='relative' w="100%">
@@ -43,7 +53,7 @@ export default function Page(){
                     <Text c='grey'>We`re so excited to see you again!</Text>
                     <Flex mt={20} gap={15} w="100%" direction='column'>
                         <TextInput {...form.getInputProps('email')}  styles={TextInputStyle} labelProps={{style: {fontSize:'11px',fontWeight:'700'} }} required label="EMAIL OR PHONE NUMBER"/>
-                        <TextInput {...form.getInputProps('password')}  styles={TextInputStyle} labelProps={{style: {fontSize:'11px',fontWeight:'700'} }} required label="PASSWORD"/>
+                        <PasswordInput {...form.getInputProps('password')}  styles={TextInputStyle} labelProps={{style: {fontSize:'11px',fontWeight:'700'} }} required label="PASSWORD"/>
                         <Link href={'/home'}><Text mt={0} size='xs' c='blue'>Forgot your password?</Text></Link>
                     </Flex>
                     <Button type='submit' w='100%' color={'#1a56d9'} variant='filled' mt={20}>Log In</Button>

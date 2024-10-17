@@ -1,9 +1,11 @@
 'use client'
 
-import { Box, Flex, Overlay, Title,Text, TextInput, Button, Select } from "@mantine/core";
+import { Box, Flex, Overlay, Title,Text, TextInput, Button, Select, PasswordInput } from "@mantine/core";
 import { IconBlobFilled } from "@tabler/icons-react";
 import { useForm } from '@mantine/form';
 import Link from "next/link";
+import { registerUser } from "./actions";
+import { useRouter } from "next/navigation";
 
 const labelProps = {style: {fontSize:'11px',fontWeight:'700'} };
 const TextInputStyle = {input:{backgroundColor:'var(--mantine-color-dark-8)', border:0}, root:{height:70}};
@@ -43,6 +45,7 @@ const months = [
   }
 
 export default function Page(){
+    const router = useRouter();
 
     const form = useForm({
         initialValues: {
@@ -67,17 +70,32 @@ export default function Page(){
         },
       });
 
-    const handleSubmit = (values: RegisterValues) => {
-        // Combine month, day, year into a single Date object
+      const handleSubmit = async (values: RegisterValues) => {
         const { month, day, year, ...otherValues } = values;
         const dateOfBirth = new Date(`${year}-${month}-${day}`);
-    
-        console.log({
-          ...otherValues, // email, username, and password
-          dateOfBirth,    // the Date object
-        });
-        
-        // Further processing like sending to the backend
+      
+        const formData = {
+          ...otherValues,
+          dateOfBirth,
+        };
+      
+        try {
+          const response = await registerUser(formData);
+      
+          form.setErrors({});
+
+          if (response.errors) {
+            Object.keys(response.errors).forEach((field) => {
+            form.setFieldError(field, response.errors[field]);
+          });
+          } 
+          else {
+            router.push('/');
+          }
+        } 
+        catch{
+          form.setFieldError('email', 'Failed to register. Please try again.');
+        }
       };
 
     return <Flex pos='relative' w="100%">
@@ -90,7 +108,7 @@ export default function Page(){
                         <TextInput  {...form.getInputProps('email')} styles={TextInputStyle} labelProps={labelProps} required label="EMAIL"/>
                         <TextInput  {...form.getInputProps('displayName')} styles={TextInputStyle} labelProps={labelProps} label="DISPLAY NAME"/>
                         <TextInput  {...form.getInputProps('username')} styles={TextInputStyle} labelProps={labelProps} required label="USERNAME"/>
-                        <TextInput  {...form.getInputProps('password')} styles={TextInputStyle} labelProps={labelProps} required label="PASSWORD"/>
+                        <PasswordInput  {...form.getInputProps('password')} styles={TextInputStyle} labelProps={labelProps} required label="PASSWORD"/>
                         <Flex gap={5} mt={25} align='start'>
                             <Select mt={-25} {...form.getInputProps('month')} data={months} styles={TextInputStyle} labelProps={labelProps} placeholder="Month" required label="DATE OF BIRTH"/>
                             <Select {...form.getInputProps('day')} data={days} styles={TextInputStyle} placeholder="Day" labelProps={labelProps}/>
