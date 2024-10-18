@@ -16,12 +16,14 @@ const registerUserSchema = z.object({
 
   export async function registerUser(userData: { email: string; username: string; password: string; dateOfBirth: Date; displayName?: string }) {
     try {
-
-    const ip = headers().get("x-forwarded-for") ?? "unknown";
-    const isRateLimited = rateLimit(ip);
-    if (isRateLimited) {
+      
+      const ip = headers().get("x-forwarded-for") ?? "unknown";
+      const isRateLimited = rateLimit(ip);
+      
+      if (!isRateLimited) {
         return { errors: { general: "rate limited"} };
-    }
+      }
+
     // Validate the input data using Zod
     const validatedData = registerUserSchema.parse(userData);
 

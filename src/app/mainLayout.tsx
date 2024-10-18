@@ -29,7 +29,7 @@ export default async function MainLayout({
  const header_url = headersList.get('x-url') || "";
  const url = new URL(header_url);
 
-  if (!(url.pathname == "/login") && !session.user) {
+  if (!(url.pathname == "/login" || url.pathname == "/register") && !session.user) {
     redirect("/login");
   }
   else if(url.pathname == "/login" && session.user)

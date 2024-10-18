@@ -59,7 +59,7 @@ export default function Page(){
                     <Flex mt={20} gap={15} w="100%" direction='column'>
                         <TextInput {...form.getInputProps('email')}  styles={TextInputStyle} labelProps={{style: {fontSize:'11px',fontWeight:'700'} }} required label="EMAIL OR PHONE NUMBER"/>
                         <PasswordInput {...form.getInputProps('password')}  styles={TextInputStyle} labelProps={{style: {fontSize:'11px',fontWeight:'700'} }} required label="PASSWORD"/>
-                        <Link href={'/home'}><Text mt={0} size='xs' c='blue'>Forgot your password?</Text></Link>
+                        <Link href={'/forgot'}><Text mt={0} size='xs' c='blue'>Forgot your password?</Text></Link>
                     </Flex>
                     <Button type='submit' w='100%' color={'#1a56d9'} variant='filled' mt={20}>Log In</Button>
                     <Flex mt={5} gap={5} w='100%'>
