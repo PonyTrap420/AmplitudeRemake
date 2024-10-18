@@ -1,14 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server';
-import rateLimit from './lib/ratelimit';
+import { createMiddleware } from "@rescale/nemo";
+import { rateLimitMiddleware } from "./middlewares/ratelimiter";
+import { urlMiddleware } from "./middlewares/url";
 
-export default function middleware(request: NextRequest) {
-  if (!rateLimit(request.ip)) {
-    return new NextResponse('Too many requests. Please try again later.', { status: 429 });
-  }
+const middlewares = {
+  "/api": rateLimitMiddleware,
+  "/*": urlMiddleware
+};
 
-  return NextResponse.next();
-}
+
+export const middleware = createMiddleware(middlewares);
 
 export const config = {
-  matcher: ['/api/:path*'],
+  matcher: "/((?!api/|_next/|_static|_vercel|[\\w-]+\\.\\w+).*)",
 };
