@@ -90,7 +90,7 @@ export default function Page(){
           });
           } 
           else {
-            router.push('/');
+            router.push('/login');
           }
         } 
         catch{
@@ -119,7 +119,7 @@ export default function Page(){
                     <Button type="submit" w='100%' color={'#1a56d9'} variant='filled' mt={5}>Continue</Button>
                     <Flex mt={5} direction='column' gap={20} w='100%'>
                         <Text c='grey' size='xs' ta='left'>By registering, you agree to Amplitudes TOS and Privacy Policy.</Text>
-                        <Link href={'/'}><Text size='xs' c='blue'>Already have an account?</Text></Link>
+                        <Link href={'/login'}><Text size='xs' c='blue'>Already have an account?</Text></Link>
                     </Flex>
               </Flex>
             </form>
