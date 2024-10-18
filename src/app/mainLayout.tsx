@@ -2,12 +2,38 @@ import { Flex,Text, Card, ScrollArea, Divider } from "@mantine/core";
 import { IconBrandDiscordFilled } from "@tabler/icons-react";
 import Server from "../components/Home/Server";
 import Link from "next/link";
+import { getIronSession, IronSession, IronSessionData } from "iron-session";
+import { sessionOptions } from "@/lib/session";
+import { cookies, headers } from "next/headers";
+import { redirect } from "next/navigation";
 
-export default function MainLayout({
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+async function getSession() {
+  const session : IronSession<IronSessionData> = await getIronSession(cookies(), sessionOptions);
+
+  return session;
+}
+
+export default async function MainLayout({
     children,
   }: Readonly<{
     children: React.ReactNode;
   }>) {
+
+ const session = await getSession();
+ console.log(session)
+
+ const headersList = headers();
+ const header_url = headersList.get('x-url') || "";
+ const url = new URL(header_url);
+
+  if (!(url.pathname == "/login") && !session.user) {
+    redirect("/login");
+  }
+  else if(url.pathname == "/login" && session.user)
+    redirect("/home/friends");
 
  const servers = Array.from({ length: 23 }).map((_, index) => {
    return <Server key={index}/>
