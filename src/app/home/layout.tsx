@@ -30,7 +30,7 @@ export default function HomeLayout({
                                 </Button>
                             </Link>
 
-                            <Link href={"/home/chat"}>
+                            <Link href={"/home/shop"}>
                                 <Button w={"100%"} h={45} c='gray' variant='subtle' justify='start' leftSection={<IconShoppingCart size={30}/>} >
                                     <Text size="xl">Shop</Text> 
                                 </Button>

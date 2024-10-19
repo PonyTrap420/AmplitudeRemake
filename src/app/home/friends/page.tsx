@@ -1,12 +1,49 @@
+'use client'
+
 import CreateDM from "@/components/CreateDM";
 import Friend from "@/components/Home/Friend";
-import { Flex,Text, Divider, Button, TextInput, ScrollArea, ActionIcon, Space } from "@mantine/core";
+import { Flex,Text, Divider, Button, TextInput, ScrollArea, ActionIcon, Space, Title } from "@mantine/core";
 import { IconFriends, IconHelpCircleFilled, IconInbox, IconMessagePlus, IconSearch } from "@tabler/icons-react";
+import { useRef, useState } from "react";
+import axios from 'axios';
+import useSWR, { mutate } from 'swr';
+import { User } from "@/types/User";
+
+enum FriendsType{
+    ONLINE="Online",
+    ALL = "All",
+    PENDING = "Pending",
+    BLOCKED = "BLocked",
+    ADD = "Add Friend"
+}
+
+const fetchFriends = async (url: string) => {
+    const response = await axios.get(url);
+    return response.data;
+  };
 
 export default function Friends(){
-    const friends = Array.from({ length: 37 }).map((_, index) => {
-        return <Friend key={index}/>
-     });
+    const [friendsType, setFriendsType] = useState<FriendsType>(FriendsType.ONLINE);
+
+    const { data } = useSWR<User[]>(`/api/friends?status=${friendsType.toLowerCase()}`, fetchFriends);
+    const addFriendRef = useRef<HTMLInputElement>(null);
+    const [addFriendError, setAddFriendError] = useState<string | null>(null);
+
+    const addFriend = async (username: string | undefined) => {
+        if(!username)
+            return
+        try {
+          await axios.post('/api/friends', { username });
+
+          mutate('/api/friends');
+        } catch{
+            setAddFriendError("Error adding friend")
+        }
+      };
+
+    const friendsList = data?.map((friend: User, index: number) => {
+        return <Friend key={index} friend={friend} />;
+      });
 
     return <Flex direction='column' bg='var(--mantine-color-dark-5)' h="100%" w="100%" >
     <Flex pr={0} mah={60} style={{borderBottom:'2px solid var(--mantine-color-dark-7)'}} gap={20} p={10} w="100%" align='center' justify='start'>
@@ -16,12 +53,12 @@ export default function Friends(){
         </Flex>
         <Divider color="dark.3"  size={2} orientation='vertical'/>
         <Flex>
-            <Button fz='h4'>Online</Button>
-            <Button fz='h4'>All</Button>
-            <Button fz='h4'>Pending</Button>
-            <Button fz='h4'>Blocked</Button>
+            <Button bg={friendsType==FriendsType.ONLINE?'dark.4':''} c={'white'} variant='subtle' onClick={()=>setFriendsType(FriendsType.ONLINE)} fz='h4'>Online</Button>
+            <Button bg={friendsType==FriendsType.ALL?'dark.4':''} variant='subtle' onClick={()=>setFriendsType(FriendsType.ALL)} fz='h4'>All</Button>
+            <Button bg={friendsType==FriendsType.PENDING?'dark.4':''} variant='subtle' onClick={()=>setFriendsType(FriendsType.PENDING)} fz='h4'>Pending</Button>
+            <Button bg={friendsType==FriendsType.BLOCKED?'dark.4':''}variant='subtle'  onClick={()=>setFriendsType(FriendsType.BLOCKED)} fz='h4'>Blocked</Button>
         </Flex>
-        <Button miw={'fit-content'} fz='h4' variant='light' c='green'>Add Friend</Button>
+        <Button onClick={()=>setFriendsType(FriendsType.ADD)} miw={'fit-content'} fz='h4' variant='light' c='green'>Add Friend</Button>
         <Space miw={0} w="100%"/>
         <Flex pr={0} justify='center' h={"100%"} align='center' p={10}>
             <CreateDM>
@@ -33,16 +70,32 @@ export default function Friends(){
         </Flex>
     </Flex>
     <Flex w="100%" h="100%">
-        <Flex p={20} w="100%" direction='column'>
-            <Flex justify='center'>
-                <TextInput rightSection={<IconSearch/>} size='lg' w="100%" styles={{input:{backgroundColor:'var(--mantine-color-dark-8)'}}} placeholder="Search"/>
-            </Flex>
-            <Text mt={20} mb={10}>Online - 37</Text>
-            <ScrollArea>
-            <Flex direction='column'>
-                {friends}
-            </Flex>
-            </ScrollArea>
+        <Flex pt={20} p={30} w="100%" direction='column'>
+            
+            {friendsType!=FriendsType.ADD?
+            <>
+                <Flex justify='center'>
+                    <TextInput rightSection={<IconSearch/>} size='lg' w="100%" styles={{input:{backgroundColor:'var(--mantine-color-dark-8)'}}} placeholder="Search"/>
+                </Flex>
+                <Text mt={20} mb={10}>Online - 37</Text>
+                <ScrollArea>
+                    <Flex direction='column'>
+                        {friendsList}
+                    </Flex>
+                </ScrollArea>
+            </>
+        :
+            <>
+                <Title size='h4' c={'white'} lts={1}>ADD FRIEND</Title>
+                <Text m={10} ml={0}>You can add friends with their Amplitude username</Text>
+                <Flex mt={10} justify='center'>
+                    <TextInput ref={addFriendRef} error={addFriendError} classNames={{input: 'focus:!border-sky-500'}} radius={'md'} 
+                    rightSection={<Button onClick={() => addFriend(addFriendRef.current?.value)} color={'#1a56d9'} variant='filled' ml={-140}>Send Friend Request</Button>} size='lg' w="100%" styles={{input:{backgroundColor:'var(--mantine-color-dark-8)',height:60}}} placeholder="You can add friends with their Amplitude username."/>
+                </Flex>
+                <Divider mt={30} size={3} w='100%' orientation='horizontal'></Divider>
+            </>
+            }
+            
         </Flex>
         <Divider size={3} orientation='vertical'/>
         <Flex w={600}>
