@@ -2,7 +2,7 @@ const IP_RATE_LIMIT = new Map<string, { count: number; timestamp: number }>();
 
 // Define rate limit options
 const RATE_LIMIT_WINDOW_MS = 10 * 1000; // 10 seconds
-const MAX_REQUESTS = 5; // Max 5 requests per window
+const MAX_REQUESTS = 10; // Max 5 requests per window
 
 export default function rateLimit(reqIP:string|undefined) {
   const ip = reqIP ?? '127.0.0.1';
