@@ -23,14 +23,13 @@ export default async function MainLayout({
   }>) {
 
  const session = await getSession();
- console.log(session)
 
  const headersList = headers();
  const header_url = headersList.get('x-url') || "";
  const url = new URL(header_url);
 
   if (!(url.pathname == "/login" || url.pathname == "/register") && !session.user) {
-    redirect("/login");
+    //redirect("/login");
   }
   else if(url.pathname == "/login" && session.user)
     redirect("/home/friends");

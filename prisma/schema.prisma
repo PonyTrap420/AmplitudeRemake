@@ -58,7 +58,7 @@ model Message {
 model User {
   id           String    @id @default(auto()) @map("_id") @db.ObjectId
   email        String    @unique
-  username     String
+  username     String    @unique
   displayName  String?
   password     String
   dateOfBirth  DateTime
@@ -75,9 +75,30 @@ model User {
 
   ownedServers Server[] @relation("Owner")
 
+  relationshipsFrom Relationship[] @relation("UserFromRelationship")
+  relationshipsTo   Relationship[] @relation("UserToRelationship")
+
   @@map("users")
 }
 
+model Relationship {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  fromUserId   String   @db.ObjectId
+  toUserId     String   @db.ObjectId
+  status       RelationshipStatus
+  fromUser     User     @relation("UserFromRelationship", fields: [fromUserId], references: [id])
+  toUser       User     @relation("UserToRelationship", fields: [toUserId], references: [id])
+
+  @@map("relationships")
+}
+
+enum RelationshipStatus {
+  pending
+  confirmed
+  blocked_to
+  blocked_from
+  blocked_both
+}
 
 model Embed {
   id          String    @id @default(auto()) @map("_id") @db.ObjectId

@@ -1,3 +1,5 @@
+import { User } from "./User";
+
 export type Message = {
     id: number
     channel_id:number,
@@ -26,14 +28,4 @@ type Thumbnail = {
     proxy_url: string,
     width: number,
     height: number,
-}
-
-type User = {
-    id:string,
-    username: string,
-    global_name:string,
-    avatar: string,
-    banner:string,
-    accent_color: string,
-    banner_color: string
 }
