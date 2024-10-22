@@ -24,7 +24,8 @@ const geistMono = localFont({
 });
 
 const theme = createTheme({
-  fontFamily:'roboto',
+  scale:1,
+  fontFamily:geistSans.style.fontFamily,
   primaryColor: 'dark',
   primaryShade:{dark:5}
 });
