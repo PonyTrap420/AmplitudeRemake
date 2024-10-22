@@ -39,7 +39,7 @@ export default async function MainLayout({
  });
 
  return <Flex align='center' w="100%" direction='column'>
-    <Card bg='var(--mantine-color-dark-8)' maw='100%' h='80vh' w="80%" withBorder pl={0} pr={0}>
+    <Card bg='#181818' maw='100%' h='80vh' w="80%" withBorder pl={0} pr={0}>
         <Text ml={10} mt={-10} mb={5} fw='bold' size='md'>Amplitude</Text>
         <Flex h="100%">   
                 <ScrollArea type='never' miw={100} maw={100} scrollbars='y'>

@@ -17,10 +17,10 @@ export default function MessageBlock({message,isFirst,onContextMenu} : {message:
         {isFirst?<Avatar size={40} className="hover:cursor-pointer"/>:<Text fz='xs' className="opacity-0 group-hover:opacity-100" style={{textWrap:'nowrap'}} miw={40} maw={40}>{date?.toLocaleTimeString('en-US', {timeStyle:'short',hour12:true})}</Text>}
         <Flex w="70%" direction='column'>
             {isFirst?<Flex gap={10}>
-                <Text c='white' className="hover:underline hover:cursor-pointer">{message.author.global_name}</Text>
+                <Text c='white' className="hover:underline hover:cursor-pointer">{message.author.displayName}</Text>
                 <Text>{date?.toLocaleString('en-US')}</Text>
             </Flex>:null}
-            <Text className="select-text font-sans">{message.content}</Text>
+            <Text className="select-text">{message.content}</Text>
         </Flex>
     </Flex>)
 }
