@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     session.user = { id: user.id, email: user.email };
     await session.save();
 
-    return NextResponse.json({ success: true, user:user});
+    return NextResponse.json({ success: true});
   } catch (error) {
     console.error('Login error:', error);
     return NextResponse.json({ errors: { general: 'Something went wrong. Try again.' } }, { status: 500 });

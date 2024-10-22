@@ -60,6 +60,7 @@ model User {
   email        String    @unique
   username     String    @unique
   displayName  String?
+  status       UserStatus @default(offline)
   password     String
   dateOfBirth  DateTime
   avatar       String?
@@ -79,6 +80,13 @@ model User {
   relationshipsTo   Relationship[] @relation("UserToRelationship")
 
   @@map("users")
+}
+
+enum UserStatus {
+  online
+  idle
+  dnd
+  offline
 }
 
 model Relationship {

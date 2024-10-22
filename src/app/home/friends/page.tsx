@@ -5,27 +5,22 @@ import Friend from "@/components/Home/Friend";
 import { Flex,Text, Divider, Button, TextInput, ScrollArea, ActionIcon, Space, Title } from "@mantine/core";
 import { IconFriends, IconHelpCircleFilled, IconInbox, IconMessagePlus, IconSearch } from "@tabler/icons-react";
 import { useRef, useState } from "react";
-import axios from 'axios';
-import useSWR, { mutate } from 'swr';
-import { User } from "@/types/User";
+import axios, { AxiosError } from 'axios';
+import { FriendsType, User } from "@/types/User";
+import useSWR, { useSWRConfig } from "swr";
 
-enum FriendsType{
-    ONLINE="Online",
-    ALL = "All",
-    PENDING = "Pending",
-    BLOCKED = "BLocked",
-    ADD = "Add Friend"
-}
 
-const fetchFriends = async (url: string) => {
-    const response = await axios.get(url);
+const fetchFriends = async (url: string, status: string|unknown) => {
+    const response = await axios.get(`${url}${status}`);
     return response.data;
   };
 
 export default function Friends(){
+    const { mutate } = useSWRConfig()
+
     const [friendsType, setFriendsType] = useState<FriendsType>(FriendsType.ONLINE);
 
-    const { data } = useSWR<User[]>(`/api/friends?status=${friendsType.toLowerCase()}`, fetchFriends);
+    const { data } = useSWR<User[]>([`/api/friends?status=`, `${friendsType.toLowerCase()}`], ([url, status]) => fetchFriends(url, status));
     const addFriendRef = useRef<HTMLInputElement>(null);
     const [addFriendError, setAddFriendError] = useState<string | null>(null);
 
@@ -35,17 +30,21 @@ export default function Friends(){
         try {
           await axios.post('/api/friends', { username });
 
-          mutate('/api/friends');
-        } catch{
-            setAddFriendError("Error adding friend")
+          mutate([`/api/friends?status=`, `${friendsType.toLowerCase()}`]);
+        }   catch (e: unknown) {
+            if (e instanceof AxiosError && e.response && e.response.data) {
+                setAddFriendError(e.response.data.error);
+            } else {
+                setAddFriendError('An unexpected error occurred');
+            }
         }
       };
 
     const friendsList = data?.map((friend: User, index: number) => {
-        return <Friend key={index} friend={friend} />;
+        return <Friend type={friendsType} key={index} friend={friend} />;
       });
 
-    return <Flex direction='column' bg='var(--mantine-color-dark-5)' h="100%" w="100%" >
+    return <Flex direction='column' bg='#0c0c0c' h="100%" w="100%" >
     <Flex pr={0} mah={60} style={{borderBottom:'2px solid var(--mantine-color-dark-7)'}} gap={20} p={10} w="100%" align='center' justify='start'>
         <Flex align='center' ml={10} gap={10}>
             <IconFriends size={30}/>
@@ -77,7 +76,7 @@ export default function Friends(){
                 <Flex justify='center'>
                     <TextInput rightSection={<IconSearch/>} size='lg' w="100%" styles={{input:{backgroundColor:'var(--mantine-color-dark-8)'}}} placeholder="Search"/>
                 </Flex>
-                <Text mt={20} mb={10}>Online - 37</Text>
+                <Text mt={20} mb={10}>{friendsType} - 37</Text>
                 <ScrollArea>
                     <Flex direction='column'>
                         {friendsList}

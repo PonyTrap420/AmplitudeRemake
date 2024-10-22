@@ -1,8 +1,9 @@
-import { Card,Text,Container, Flex, TextInput, ScrollArea, Button, ActionIcon, Indicator, Avatar, Space } from "@mantine/core"
-import { IconFriends, IconShoppingCart, IconUserFilled, IconPlus, IconMicrophoneFilled, IconHeadset, IconSettingsFilled } from "@tabler/icons-react"
+import { Card,Text,Container, Flex, TextInput, ScrollArea, Button, ActionIcon } from "@mantine/core"
+import { IconFriends, IconShoppingCart, IconUserFilled, IconPlus} from "@tabler/icons-react"
 import DirectMessage from "../../components/Home/DirectMessage";
 import Link from "next/link";
 import CreateDM from "../../components/CreateDM";
+import ProfileContainer from "@/components/Profile/ProfileContainer";
 
 export default function HomeLayout({
     children,
@@ -15,7 +16,7 @@ export default function HomeLayout({
       });
 
     return (
-        <Card w='100%' h="100%" p={0}>
+        <Card bg='dark.8' w='100%' h="100%" p={0}>
             <Flex  w="100%" h="100%">
                 <Flex pos='relative' miw={300} maw={300} h="100%" w="20%" align='center' direction='column'>
                     <Container mih={60} style={{borderBottom:'2px solid var(--mantine-color-dark-7)'}} w="100%">
@@ -57,29 +58,7 @@ export default function HomeLayout({
                         </Flex>
                     </ScrollArea>
 
-                    <Flex style={{zIndex:201}} pos='absolute' bottom={2} align='center' bg='dark.7' gap={10} p={10} w="100%">
-                        <Indicator withBorder size={14} color='red' offset={8} position='bottom-end'>
-                        <Avatar size={45}></Avatar>
-                        </Indicator>
-                        <Flex direction='column'>
-                            <Text fw='bold'>PonyTrap</Text>
-                            <Text>🪐</Text>
-                        </Flex>
-
-                        <Space miw={0} w="100%"/>
-
-                        <Flex gap={5}>
-                            <ActionIcon variant='transparent'>
-                                <IconMicrophoneFilled/>
-                            </ActionIcon>
-                            <ActionIcon variant='transparent'>
-                                <IconHeadset/>
-                            </ActionIcon>
-                            <ActionIcon variant='transparent'>
-                                <IconSettingsFilled/>
-                            </ActionIcon>
-                        </Flex>
-                    </Flex>
+                  <ProfileContainer/>
 
                 </Flex>
                 {children}
