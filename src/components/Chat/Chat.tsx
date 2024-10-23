@@ -6,8 +6,11 @@ import { Divider, Flex, ScrollArea, Text } from "@mantine/core";
 import ContextMenu, { ContextMenuButton } from "../ContextMenu";
 import useContextMenu from "@/hooks/useContextMenu";
 import { IconCopy, IconCornerUpLeft, IconCornerUpRight, IconPencil, IconPinFilled } from "@tabler/icons-react";
+import { useEffect, useRef } from "react";
 
 export default function Chat({messages}:{messages:Message[]}) {
+  const viewport = useRef<HTMLDivElement>(null);
+
   let firstChecker = '';
   const { clicked, setClicked, location, setLocation } = useContextMenu();
 
@@ -17,8 +20,6 @@ export default function Chat({messages}:{messages:Message[]}) {
     const rect = e.currentTarget.getBoundingClientRect();
     const scaleFactor = window.devicePixelRatio || 1;
 
-    console.log(rect);
-    console.log(e);
     setClicked(true);
     setLocation({
       x: e.clientX-rect.left,
@@ -26,15 +27,21 @@ export default function Chat({messages}:{messages:Message[]}) {
     });
   }
 
+  useEffect(() => {
+    if (viewport.current) {
+      viewport.current.scrollTo({ top: viewport.current.scrollHeight, behavior: 'auto' });
+    }
+  }, [messages]);
+
   return (<>
-    <ScrollArea>
+    <ScrollArea viewportRef={viewport}>
      <Flex p={20} pt={5} w="100%" direction='column'>
 
       {messages.length > 0
         ? messages.map(function (message: Message, index: number){
-          const isFirst = message.author.id!=firstChecker;
+          const isFirst = message.authorId!=firstChecker;
           if(isFirst)
-            firstChecker=message.author.id
+            firstChecker=message.authorId
 
           return <MessageBlock onContextMenu={ContextClicked} isFirst={isFirst} key={index} message={message} />
       })

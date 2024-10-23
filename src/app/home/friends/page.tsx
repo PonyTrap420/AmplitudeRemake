@@ -51,7 +51,7 @@ export default function Friends(){
             <Text fz='h4' fw="bold">Friends</Text>
         </Flex>
         <Divider color="dark.3"  size={2} orientation='vertical'/>
-        <Flex>
+        <Flex gap={5}>
             <Button bg={friendsType==FriendsType.ONLINE?'dark.4':''} c={'white'} variant='subtle' onClick={()=>setFriendsType(FriendsType.ONLINE)} fz='h4'>Online</Button>
             <Button bg={friendsType==FriendsType.ALL?'dark.4':''} variant='subtle' onClick={()=>setFriendsType(FriendsType.ALL)} fz='h4'>All</Button>
             <Button bg={friendsType==FriendsType.PENDING?'dark.4':''} variant='subtle' onClick={()=>setFriendsType(FriendsType.PENDING)} fz='h4'>Pending</Button>

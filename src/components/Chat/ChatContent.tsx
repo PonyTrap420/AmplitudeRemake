@@ -1,27 +1,23 @@
 'use client'
 
-import { useEffect, useState } from "react";
-import Chat from "@/components/Chat/Chat";
-import ChatSkeleton from "@/components/Chat/ChatSkeleton";
-import { Message } from "@/types/Message";
+import { useParams } from 'next/navigation';
+import useSWR from 'swr';
+import Chat from '@/components/Chat/Chat';
+import ChatSkeleton from '@/components/Chat/ChatSkeleton';
+import axios from 'axios';
+
+const fetchChat = async (url: string, id: string|unknown) => {
+  const response = await axios.get(`${url}${id}`);
+  return response.data;
+};
+
 
 export default function ChatContent() {
-  const [messages, setMessages] = useState<Message[]>();
+  const { id } = useParams();
+  const { data: data, error } = useSWR([`/api/chat/`, `${id}`], ([url, id]) => fetchChat(url, id),{refreshInterval:2000});
 
-  useEffect(() => {
-    const fetchMessages = async () => {
-      await new Promise(resolve => setTimeout(resolve, 300)); // Simulate loading
-      const data = await import("@/.mock/messages.json");
-      const messages: Message[] = data.default as unknown as Message[];
-      setMessages([...messages].reverse());
-    };
+  if (error) return <div>Failed to load messages</div>;
+  if (!data) return <ChatSkeleton />;
 
-    fetchMessages();
-  }, []);
-
-  if (!messages) {
-    return <ChatSkeleton />;
-  }
-
-  return <Chat messages={messages} />;
+  return <Chat messages={data.messages?data.messages:[]} />;
 }
