@@ -51,15 +51,16 @@ export default function Friend({friend, type} : {friend:User, type: FriendsType}
         <Space miw={0} w="100%"/>
         <Flex mr={20} gap={10}>
             {(type === FriendsType.ONLINE || type === FriendsType.ALL) ?<>
-            <Tooltip label="Message">
                 <Link href={`/home/chat/`+friend.id}>
-                    <ActionIcon bg={hovered?'dark.6':''} variant='light' radius='xl' size={45}><IconMessage/></ActionIcon>
+                <Tooltip label="Message">
+                        <ActionIcon bg={hovered?'dark.6':''} variant='light' radius='xl' size={45}><IconMessage/></ActionIcon>
+                </Tooltip>
                 </Link>
-            </Tooltip>
-            <Tooltip label="More">
                 <Menu shadow="md" width={200}>
                     <Menu.Target>
+                        <Tooltip label="More">
                         <ActionIcon bg={hovered?'dark.6':''} variant='light' radius='xl' size={45}><IconDotsVertical/></ActionIcon>
+                        </Tooltip>
                     </Menu.Target>
                     <Menu.Dropdown bg="dark.9">
                         <Menu.Item>
@@ -70,7 +71,7 @@ export default function Friend({friend, type} : {friend:User, type: FriendsType}
                         </Menu.Item>
                     </Menu.Dropdown>
                 </Menu>
-            </Tooltip></>:<>
+            </>:<>
             {type == FriendsType.BLOCKED?
                 <Tooltip label="Unblock">
                     <ActionIcon bg={hovered?'dark.6':''} variant='light' radius='xl' size={45}><IconFriendsOff/></ActionIcon>

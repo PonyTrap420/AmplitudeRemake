@@ -2,17 +2,18 @@ import { User } from "./User";
 
 export type Message = {
     id: number
-    channel_id:number,
+    channel_id?:number,
+    authorId: string,
     author: User,
-    pinned:boolean,
-    meantion_everyone: boolean
+    pinned?:boolean,
+    meantion_everyone?: boolean
 
     content:string;
-    mentions: number[];
-    attachments: string[],
-    embeds: Embed[]
+    mentions?: number[];
+    attachments?: string[],
+    embeds?: Embed[]
     timestamp: Date,
-    edited_timestamp: Date,
+    edited_timestamp?: Date,
 }
 
 type Embed = {
