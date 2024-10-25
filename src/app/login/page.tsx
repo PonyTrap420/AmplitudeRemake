@@ -37,7 +37,7 @@ export default function Page(){
         form.setErrors({});
         if (data.success) {
           console.log('User logged in successfully:', data.user);
-          router.push('/home/friends'); 
+          router.push('/channels/me/friends'); 
         } else {
              Object.keys(data.errors).forEach((field) => {
             form.setFieldError(field, data.errors[field]);
@@ -49,7 +49,7 @@ export default function Page(){
       }
     };
 
-    return <Flex pos='relative' w="100%">
+    return <Flex pos='relative' h={"100%"} w="100%">
         <Overlay blur="6vw">  
             <Flex pos='relative' w="100%" h="100%" justify='center' align='center'>
             <form onSubmit={form.onSubmit(handleSubmit)}>

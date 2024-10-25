@@ -6,7 +6,7 @@ export default function Server(){
     return <Flex pos='relative' w="100%">
         <Overlay blur="6vw">  
             <Flex pos='relative' w="100%" h="100%" justify='center' align='center'>
-                <Link href="/home">
+                <Link href="/channels/me">
                 <Title>Server...</Title>
                 </Link>
             </Flex>
