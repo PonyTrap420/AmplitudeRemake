@@ -51,7 +51,7 @@ export default function Friend({friend, type} : {friend:User, type: FriendsType}
         <Space miw={0} w="100%"/>
         <Flex mr={20} gap={10}>
             {(type === FriendsType.ONLINE || type === FriendsType.ALL) ?<>
-                <Link href={`/home/chat/`+friend.id}>
+                <Link href={`/channels/me/chat/`+friend.id}>
                 <Tooltip label="Message">
                         <ActionIcon bg={hovered?'dark.6':''} variant='light' radius='xl' size={45}><IconMessage/></ActionIcon>
                 </Tooltip>

@@ -16,7 +16,7 @@ export default async function ProfileContainer()
 
     const user : User | null = await getUser(session.user.id);
 
-    return <Flex style={{zIndex:201}} pos='absolute' bottom={2} align='center' bg='dark.7' gap={10} p={7} w="100%">
+    return <Flex style={{zIndex:201}} pos='absolute' bottom={0} align='center' bg='dark.7' gap={10} p={7} w="100%">
 
     <Popover position='top-start' offset={{mainAxis:10, crossAxis: -25 }} >
         <PopoverTarget>

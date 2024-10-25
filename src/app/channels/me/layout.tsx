@@ -1,8 +1,8 @@
 import { Card,Text,Container, Flex, TextInput, ScrollArea, Button, ActionIcon } from "@mantine/core"
 import { IconFriends, IconShoppingCart, IconUserFilled, IconPlus} from "@tabler/icons-react"
-import DirectMessage from "../../components/Home/DirectMessage";
+import DirectMessage from "@/components/Home/DirectMessage";
 import Link from "next/link";
-import CreateDM from "../../components/CreateDM";
+import CreateDM from "@/components/CreateDM";
 import ProfileContainer from "@/components/Profile/ProfileContainer";
 
 export default function HomeLayout({
@@ -25,19 +25,19 @@ export default function HomeLayout({
 
                     <ScrollArea w="100%" p={10} pb={0}>
                         <Flex direction='column' gap={10} mt={10} w="95%">
-                            <Link href={"/home/friends"}>
+                            <Link href={"/channels/me/friends"}>
                                 <Button w={"100%"} h={45} c='gray' variant='subtle' justify='start' leftSection={<IconFriends size={30}/>} >
                                     <Text size="xl">Friends</Text> 
                                 </Button>
                             </Link>
 
-                            <Link href={"/home/shop"}>
+                            <Link href={"/channels/me/shop"}>
                                 <Button w={"100%"} h={45} c='gray' variant='subtle' justify='start' leftSection={<IconShoppingCart size={30}/>} >
                                     <Text size="xl">Shop</Text> 
                                 </Button>
                             </Link>
 
-                            <Link href={"/home/settings"}>
+                            <Link href={"/channels/me/settings"}>
                                 <Button w={"100%"} h={45} c='gray' variant='subtle' justify='start' leftSection={<IconUserFilled size={30}/>} >
                                     <Text size="xl">My Profile</Text> 
                                 </Button>
