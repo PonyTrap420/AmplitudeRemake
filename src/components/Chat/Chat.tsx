@@ -3,7 +3,7 @@
 import { Message } from "@/types/Message";
 import MessageBlock from "@/components/Chat/MessageBlock";
 import { Divider, Flex, ScrollArea, Text } from "@mantine/core";
-import ContextMenu, { ContextMenuButton } from "../ContextMenu";
+import ContextMenu, { ContextMenuButton } from "../Other/ContextMenu";
 import useContextMenu from "@/hooks/useContextMenu";
 import { IconCopy, IconCornerUpLeft, IconCornerUpRight, IconPencil, IconPinFilled } from "@tabler/icons-react";
 import { useEffect, useRef } from "react";

@@ -13,8 +13,7 @@ export default function Layout({
     return <Server key={index}/>
   });
   
-  return (
-    <Flex h="100%" w={"100%"}>   
+  return (<>
     <ScrollArea type='never' miw={100} maw={100} scrollbars='y'>
         <Flex align='center' gap={10} direction='column'>
             <div className="cursor-pointer transition-all duration-200 p-2.5 bg-[#161616] rounded-[100%] ease hover:bg-[#1a56d9] hover:rounded-[35%]">
@@ -29,6 +28,6 @@ export default function Layout({
         </Flex>
     </ScrollArea>
     {children}
-    </Flex>
+    </>
   );
 }
