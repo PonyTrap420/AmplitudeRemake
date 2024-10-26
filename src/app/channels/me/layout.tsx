@@ -2,7 +2,7 @@ import { Card,Text,Container, Flex, TextInput, ScrollArea, Button, ActionIcon } 
 import { IconFriends, IconShoppingCart, IconUserFilled, IconPlus} from "@tabler/icons-react"
 import DirectMessage from "@/components/Home/DirectMessage";
 import Link from "next/link";
-import CreateDM from "@/components/CreateDM";
+import CreateDM from "@/components/Other/CreateDM";
 import ProfileContainer from "@/components/Profile/ProfileContainer";
 
 export default function HomeLayout({
@@ -20,7 +20,7 @@ export default function HomeLayout({
             <Flex  w="100%" h="100%">
                 <Flex pos='relative' miw={300} maw={300} h="100%" w="20%" align='center' direction='column'>
                     <Container mih={60} style={{borderBottom:'2px solid var(--mantine-color-dark-7)'}} w="100%">
-                    <TextInput styles={{input:{backgroundColor:'var(--mantine-color-dark-8)'}}} mt={11} placeholder="Find or start a conversation"/>
+                    <TextInput styles={{input:{backgroundColor:'var(--mantine-color-dark-9)', border:0}}} mt={11} placeholder="Find or start a conversation"/>
                     </Container>
 
                     <ScrollArea w="100%" p={10} pb={0}>

@@ -1,6 +1,6 @@
 'use client'
 
-import CreateDM from "@/components/CreateDM";
+import CreateDM from "@/components/Other/CreateDM";
 import Friend from "@/components/Home/Friend";
 import { Flex,Text, Divider, Button, TextInput, ScrollArea, ActionIcon, Space, Title } from "@mantine/core";
 import { IconFriends, IconHelpCircleFilled, IconInbox, IconMessagePlus, IconSearch } from "@tabler/icons-react";
@@ -74,7 +74,7 @@ export default function Friends(){
             {friendsType!=FriendsType.ADD?
             <>
                 <Flex justify='center'>
-                    <TextInput rightSection={<IconSearch/>} size='lg' w="100%" styles={{input:{backgroundColor:'var(--mantine-color-dark-8)'}}} placeholder="Search"/>
+                    <TextInput rightSection={<IconSearch/>} size='lg' w="100%" styles={{input:{border:0,backgroundColor:'var(--mantine-color-dark-8)'}}} placeholder="Search"/>
                 </Flex>
                 <Text mt={20} mb={10}>{friendsType} - 37</Text>
                 <ScrollArea>

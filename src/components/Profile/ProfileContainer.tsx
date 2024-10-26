@@ -6,6 +6,7 @@ import { IconMicrophoneFilled, IconHeadset, IconSettingsFilled } from "@tabler/i
 import { IronSession, IronSessionData, getIronSession } from "iron-session";
 import { cookies } from "next/headers";
 import ProfilePopup from "./ProfilePopup";
+import Link from "next/link";
 
 export default async function ProfileContainer()
 {
@@ -16,7 +17,7 @@ export default async function ProfileContainer()
 
     const user : User | null = await getUser(session.user.id);
 
-    return <Flex style={{zIndex:201}} pos='absolute' bottom={0} align='center' bg='dark.7' gap={10} p={7} w="100%">
+    return <Flex style={{zIndex:201}} pos='absolute' bottom={0} align='center' bg='#181818' gap={10} p={7} w="100%">
 
     <Popover position='top-start' offset={{mainAxis:10, crossAxis: -25 }} >
         <PopoverTarget>
@@ -47,9 +48,11 @@ export default async function ProfileContainer()
         <ActionIcon size={35} variant='subtle'>
             <IconHeadset/>
         </ActionIcon>
+        <Link href='/settings' replace>
         <ActionIcon size={35} variant='subtle'>
             <IconSettingsFilled/>
         </ActionIcon>
+        </Link>
     </Flex>
 </Flex>
 }

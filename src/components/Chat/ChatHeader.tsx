@@ -1,6 +1,6 @@
 import { Flex,Text, Indicator, Avatar, Space, ActionIcon, TextInput } from "@mantine/core";
 import { IconPhoneCall, IconCameraFilled, IconPinnedFilled, IconUsersPlus, IconSearch, IconInbox, IconHelpCircleFilled } from "@tabler/icons-react";
-import CreateDM from "../CreateDM";
+import CreateDM from "../Other/CreateDM";
 import { getUser } from "@/services/userServices";
 import { User } from "@/types/User";
 

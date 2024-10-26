@@ -1,8 +1,8 @@
 'use client'
 
+import BlobAnimated from "@/components/Other/BlobAnimated";
 import { Box, Flex, Overlay, Title,Text, TextInput, Button, PasswordInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { IconBlobFilled } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -49,7 +49,7 @@ export default function Page(){
       }
     };
 
-    return <Flex pos='relative' h={"100%"} w="100%">
+    return <>
         <Overlay blur="6vw">  
             <Flex pos='relative' w="100%" h="100%" justify='center' align='center'>
             <form onSubmit={form.onSubmit(handleSubmit)}>
@@ -73,8 +73,8 @@ export default function Page(){
         </Overlay>
         <Box pos='relative' w="100%">
             <Flex w="100%" h="100%" justify='center' align='center'>
-                <IconBlobFilled color="#1a56d9" size="20vw"/>
+              <BlobAnimated color='#1a56d9'/>
             </Flex>
         </Box>
-    </Flex>
+    </>
 }

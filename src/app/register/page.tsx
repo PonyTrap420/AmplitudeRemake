@@ -1,11 +1,11 @@
 'use client'
 
 import { Box, Flex, Overlay, Title,Text, TextInput, Button, Select, PasswordInput } from "@mantine/core";
-import { IconBlobFilled } from "@tabler/icons-react";
 import { useForm } from '@mantine/form';
 import Link from "next/link";
 import { registerUser } from "./actions";
 import { useRouter } from "next/navigation";
+import BlobAnimated from "@/components/Other/BlobAnimated";
 
 const labelProps = {style: {fontSize:'11px',fontWeight:'700'} };
 const TextInputStyle = {input:{backgroundColor:'var(--mantine-color-dark-8)', border:0}, root:{height:70}};
@@ -98,7 +98,7 @@ export default function Page(){
         }
       };
 
-    return <Flex pos='relative' h={"100%"} w="100%">
+    return <>
         <Overlay blur="6vw">  
             <Flex pos='relative' w="100%" h="100%" justify='center' align='center'>
             <form onSubmit={form.onSubmit(handleSubmit)}>
@@ -127,8 +127,8 @@ export default function Page(){
         </Overlay>
         <Box pos='relative' w="100%">
             <Flex w="100%" h="100%" justify='center' align='center'>
-                <IconBlobFilled color="#1a56d9" size="20vw"/>
+                <BlobAnimated color='#1a56d9'/>
             </Flex>
         </Box>
-    </Flex>
+    </>
 }
