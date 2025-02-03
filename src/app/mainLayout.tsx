@@ -3,7 +3,6 @@ import { getIronSession, IronSession, IronSessionData } from "iron-session";
 import { sessionOptions } from "@/lib/session";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
-import Session from "@/components/Session";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -37,7 +36,6 @@ export default async function MainLayout({
         <Flex h={"100%"} direction='column'>
           <Text pl={15} h={20} lh={"20px"} fw='bold' size='xs'>Amplitude</Text>
           <Box style={{flexGrow:1,overflow:'auto',scrollbarWidth:'none'}} w={"100%"}>
-          <Session/>
             {children}
           </Box>
         </Flex>
