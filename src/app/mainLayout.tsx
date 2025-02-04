@@ -26,7 +26,7 @@ export default async function MainLayout({
  const url = new URL(header_url);
 
   if (!(url.pathname == "/login" || url.pathname == "/register") && !session.user) {
-    //redirect("/login");
+    redirect("/login");
   }
   else if(url.pathname == "/login" && session.user)
     redirect("/channels/me/friends");
