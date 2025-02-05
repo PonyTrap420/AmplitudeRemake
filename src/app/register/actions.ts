@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma'
 import argon2 from 'argon2';
 import rateLimit from '@/lib/ratelimit';
 import { headers } from 'next/headers';
+import { createSession } from '@/lib/session';
 
 const registerUserSchema = z.object({
     email: z.string().email({ message: 'Invalid email address' }),
@@ -46,6 +47,8 @@ const registerUserSchema = z.object({
         ...(validatedData.displayName && { displayName: validatedData.displayName }),
     },
     });
+    
+    await createSession(user.id)
 
     return { user };
   } catch (error) {
