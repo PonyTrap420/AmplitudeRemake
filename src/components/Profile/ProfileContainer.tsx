@@ -1,21 +1,19 @@
-import { sessionOptions } from "@/lib/session";
 import { getUser } from "@/services/userServices";
 import { User } from "@/types/User";
 import { Flex, Text, Indicator, Avatar, Space, ActionIcon, PopoverDropdown, Popover, PopoverTarget } from "@mantine/core";
 import { IconMicrophoneFilled, IconHeadset, IconSettingsFilled } from "@tabler/icons-react";
-import { IronSession, IronSessionData, getIronSession } from "iron-session";
-import { cookies } from "next/headers";
 import ProfilePopup from "./ProfilePopup";
 import Link from "next/link";
+import { verifySession } from "@/lib/dal";
 
 export default async function ProfileContainer()
 {
-    const session : IronSession<IronSessionData> = await getIronSession(cookies(), sessionOptions);
+    const session = await verifySession()
 
-    if(!session.user)
-        return; 
+    if (!session)
+      return
 
-    const user : User | null = await getUser(session.user.id);
+    const user : User | null = await getUser(session.userId);
 
     return <Flex style={{zIndex:201}} pos='absolute' bottom={0} align='center' bg='#181818' gap={10} p={7} w="100%">
 

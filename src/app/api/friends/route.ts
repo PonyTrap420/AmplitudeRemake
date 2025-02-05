@@ -1,19 +1,18 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { sessionOptions } from '@/lib/session';
-import { IronSession, IronSessionData, getIronSession } from 'iron-session';
-import { cookies } from 'next/headers';
 import { RelationshipStatus } from '@prisma/client';
+import { verifySession } from '@/lib/dal';
 
 export async function POST(request: Request) {
   try {
-    const session: IronSession<IronSessionData> = await getIronSession(cookies(), sessionOptions);
 
-    if (!session.user)
+    const session = await verifySession()
+ 
+    if (!session)
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { username } = await request.json();
-    const currentUserId = session.user.id;
+    const currentUserId = session.userId;
 
     const userToAdd = await prisma.user.findUnique({
       where: { username },
@@ -67,14 +66,14 @@ export async function POST(request: Request) {
   
 export async function PATCH(request: Request) {
   try {
-    const session: IronSession<IronSessionData> = await getIronSession(cookies(), sessionOptions);
 
-    if (!session.user) {
+    const session = await verifySession()
+
+    if (!session)
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
 
     const { action, userId } = await request.json();
-    const currentUserId = session.user.id;
+    const currentUserId = session.userId;
 
     const existingRelationship = await prisma.relationship.findFirst({
       where: {
@@ -129,72 +128,73 @@ export async function PATCH(request: Request) {
 
   
 export async function GET(request: Request) {
-    const session : IronSession<IronSessionData> = await getIronSession(cookies(), sessionOptions);
+   
+  const session = await verifySession()
+ 
+  if (!session)
+  return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    if (!session.user) {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-    }
-  
-    const userId = session.user.id;
-    const { searchParams } = new URL(request.url);
-    let status: RelationshipStatus = "confirmed";
-    if (searchParams.get('status') === 'blocked')
-      status = RelationshipStatus.blocked_to;
-    else if (searchParams.get('status') && Object.values(RelationshipStatus).includes(searchParams.get('status') as RelationshipStatus)) {
-        status = searchParams.get('status') as RelationshipStatus;
-    }
+  const userId = session.userId;
 
-    const relationships = await prisma.relationship.findMany({
-      where: {
-        OR: [
-          {
-            fromUserId: userId,
-            status: status,
-          },
-          {
-            toUserId: userId,
-            status: status,
-          },
-        ],
-      },
-      include: {
-        fromUser: true, 
-        toUser: true,
-      },
-    });
-  
-    const userMap = relationships.map(relationship => ({
-      userId: relationship.fromUserId === userId ? relationship.toUserId : relationship.fromUserId,
-      isSender: !(relationship.fromUserId === userId)
-    }));
-    
-    const userIds = userMap.map(user=>user.userId);
+  const { searchParams } = new URL(request.url);
+  let status: RelationshipStatus = "confirmed";
+  if (searchParams.get('status') === 'blocked')
+    status = RelationshipStatus.blocked_to;
+  else if (searchParams.get('status') && Object.values(RelationshipStatus).includes(searchParams.get('status') as RelationshipStatus)) {
+      status = searchParams.get('status') as RelationshipStatus;
+  }
 
-    const users = await prisma.user.findMany({
-      where: {
-        id: {
-          in: userIds,
+  const relationships = await prisma.relationship.findMany({
+    where: {
+      OR: [
+        {
+          fromUserId: userId,
+          status: status,
         },
-      },
-      select:{
-          id:true,
-          username:true,
-          displayName:true,
-          avatar:true,
-          banner:true,
-          accent_color:true,
-          banner_color:true
-      }
-    });
+        {
+          toUserId: userId,
+          status: status,
+        },
+      ],
+    },
+    include: {
+      fromUser: true, 
+      toUser: true,
+    },
+  });
 
-    const usersWithSenderInfo = users.map(user => {
-      const relationshipInfo = userMap.find(u => u.userId === user.id);
-      return {
-        ...user,
-        isSender: relationshipInfo ? relationshipInfo.isSender : false,
-      };
-    });
+  const userMap = relationships.map(relationship => ({
+    userId: relationship.fromUserId === userId ? relationship.toUserId : relationship.fromUserId,
+    isSender: !(relationship.fromUserId === userId)
+  }));
+  
+  const userIds = userMap.map(user=>user.userId);
+
+  const users = await prisma.user.findMany({
+    where: {
+      id: {
+        in: userIds,
+      },
+    },
+    select:{
+        id:true,
+        username:true,
+        displayName:true,
+        avatar:true,
+        banner:true,
+        accent_color:true,
+        banner_color:true
+    }
+  });
+
+  const usersWithSenderInfo = users.map(user => {
+    const relationshipInfo = userMap.find(u => u.userId === user.id);
+    return {
+      ...user,
+      isSender: relationshipInfo ? relationshipInfo.isSender : false,
+    };
+  });
 
 
   return NextResponse.json(usersWithSenderInfo);
-  }
+}

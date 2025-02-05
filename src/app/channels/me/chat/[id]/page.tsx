@@ -2,20 +2,18 @@ import { Flex, Space } from "@mantine/core";
 import ChatInput from "@/components/Chat/ChatInput";
 import ChatHeader from "@/components/Chat/ChatHeader";
 import ChatContent from "@/components/Chat/ChatContent";
-import { sessionOptions } from "@/lib/session";
 import { getUser } from "@/services/userServices";
-import { IronSession, IronSessionData, getIronSession } from "iron-session";
-import { cookies } from "next/headers";
 import { User } from "@/types/User";
+import { verifySession } from "@/lib/dal";
 
 export default async function Page({ params }: { params: { id: string } }) {
 
-  const session : IronSession<IronSessionData> = await getIronSession(cookies(), sessionOptions);
+  const session = await verifySession()
 
-  if(!session.user)
-      return; 
+  if (!session)
+    return;
 
-  const user : User | null = await getUser(session.user.id);
+  const user : User | null = await getUser(session.userId);
 
   if(!user)
     return
