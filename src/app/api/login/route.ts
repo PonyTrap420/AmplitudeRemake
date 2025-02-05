@@ -1,10 +1,7 @@
 import { NextResponse } from 'next/server';
-import { getIronSession, IronSession, IronSessionData } from 'iron-session';
 import { prisma } from '@/lib/prisma';
-import { sessionOptions } from '@/lib/session';
 import argon2 from 'argon2';
-import { cookies } from 'next/headers';
-
+import { createSession } from '@/lib/session';
 export async function POST(req: Request) {
   try {
     const { email, password } = await req.json();
@@ -22,11 +19,8 @@ export async function POST(req: Request) {
     if (!isValidPassword) {
       return NextResponse.json({ errors: { password: 'Invalid password' } }, { status: 400 });
     }
-
-    const session : IronSession<IronSessionData> = await getIronSession(cookies(), sessionOptions);
-
-    session.user = { id: user.id, email: user.email };
-    await session.save();
+    
+    await createSession(user.id)
 
     return NextResponse.json({ success: true});
   } catch (error) {

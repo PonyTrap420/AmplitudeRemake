@@ -1,12 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server';
 import rateLimit from './lib/ratelimit';
+import { cookies } from 'next/headers';
+import { decrypt } from './lib/session';
+
+const protectedRoutes = ['/channels']
+const publicRoutes = ['/login', '/register']
+
 export const middleware = async (req: NextRequest) => {
   if(req.nextUrl.pathname.startsWith('/api')) {
     if (!rateLimit(req.ip)) {
       return new NextResponse('Too many requests. Please try again later.', { status: 429 });
     }
   }
-  
+
+  const path = req.nextUrl.pathname
+  const isProtectedRoute = protectedRoutes.includes(path)
+  const isPublicRoute = publicRoutes.includes(path)
+
+  if(req.nextUrl.pathname == '/')
+    return NextResponse.redirect(new URL('/login', req.nextUrl))
+
+  const cookie = (await cookies()).get('session')?.value
+  const session = await decrypt(cookie)
+
+  if (isProtectedRoute && !session?.userId) {
+    return NextResponse.redirect(new URL('/login', req.nextUrl))
+  }
+
+  if (
+    isPublicRoute &&
+    session?.userId
+  ) {
+    return NextResponse.redirect(new URL('/channels/me', req.nextUrl))
+  }
+
   const requestHeaders = new Headers(req.headers);
   requestHeaders.set('x-url', req.url);
 

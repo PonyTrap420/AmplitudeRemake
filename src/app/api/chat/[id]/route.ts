@@ -1,20 +1,17 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getIronSession, IronSession, IronSessionData } from 'iron-session';
-import { sessionOptions } from '@/lib/session';
-import { cookies } from 'next/headers';
+import { verifySession } from '@/lib/dal';
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session: IronSession<IronSessionData> = await getIronSession(cookies(), sessionOptions);
+    const session = await verifySession()
 
-    if (!session.user) {
+    if (!session)
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
 
     const id = (await params).id;
     const { content } = await request.json();
-    const currentUserId = session.user.id;
+    const currentUserId = session.userId;
 
     const message = await prisma.message.create({
       data: {
@@ -37,15 +34,15 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session: IronSession<IronSessionData> = await getIronSession(cookies(), sessionOptions);
-
-    if (!session.user) {
+   
+    const session = await verifySession()
+ 
+    if (!session)
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
 
     const id = (await params).id;
 
-    const currentUserId = session.user.id;
+    const currentUserId = session.userId;
 
     const messages = await prisma.message.findMany({
       where: {
