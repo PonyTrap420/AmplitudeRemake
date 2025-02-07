@@ -23,6 +23,7 @@ export default function Friends(){
     const { data } = useSWR<User[]>([`/api/friends?status=`, `${friendsType.toLowerCase()}`], ([url, status]) => fetchFriends(url, status));
     const addFriendRef = useRef<HTMLInputElement>(null);
     const [addFriendError, setAddFriendError] = useState<string | null>(null);
+    const [searchValue, setSearchValue] = useState<string>('');
 
     const addFriend = async (username: string | undefined) => {
         if(!username)
@@ -40,7 +41,11 @@ export default function Friends(){
         }
       };
 
-    const friendsList = data?.map((friend: User, index: number) => {
+    const filteredFriends = data?.filter((friend: User) => {
+    return friendsType === FriendsType.ONLINE ? friend.status === "online" : true && friend.displayName?.toLowerCase()?.includes(searchValue.toLowerCase());
+    });
+
+    const friendsList = filteredFriends?.map((friend: User, index: number) => {
         return <Friend type={friendsType} key={index} friend={friend} />;
       });
 
@@ -74,9 +79,9 @@ export default function Friends(){
             {friendsType!=FriendsType.ADD?
             <>
                 <Flex justify='center'>
-                    <TextInput rightSection={<IconSearch/>} size='lg' w="100%" styles={{input:{border:0,backgroundColor:'var(--mantine-color-dark-8)'}}} placeholder="Search"/>
+                    <TextInput value={searchValue} onChange={(event) => setSearchValue(event.currentTarget.value)} rightSection={<IconSearch/>} size='lg' w="100%" styles={{input:{border:0,backgroundColor:'var(--mantine-color-dark-8)'}}} placeholder="Search"/>
                 </Flex>
-                <Text mt={20} mb={10}>{friendsType} - 37</Text>
+                <Text mt={20} mb={10}>{friendsType} - {friendsList?.length}</Text>
                 <ScrollArea>
                     <Flex direction='column'>
                         {friendsList}
