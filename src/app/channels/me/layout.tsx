@@ -1,25 +1,22 @@
 import { Card,Text,Container, Flex, TextInput, ScrollArea, Button, ActionIcon } from "@mantine/core"
 import { IconFriends, IconShoppingCart, IconPlus} from "@tabler/icons-react"
-import DirectMessage from "@/components/Home/DirectMessage";
 import Link from "next/link";
 import CreateDM from "@/components/Other/CreateDM";
 import ProfileContainer from "@/components/Profile/ProfileContainer";
 import { verifySession } from "@/lib/dal";
+import DmList from "@/components/Home/DmList";
 
 export default async function HomeLayout({
     children,
   }: {
     children: React.ReactNode
   }) {
+        
     const session = await verifySession()
 
     if (!session)
       return
-    
-    const dms = Array.from({ length: 23 }).map((_, index) => {
-        return <DirectMessage key={index}/>
-      });
-
+        
     return (
         <Card bg='dark.8' w='100%' h="100%" p={0}>
             <Flex  w="100%" h="100%">
@@ -53,9 +50,7 @@ export default async function HomeLayout({
                             </CreateDM>
                         </Flex>
 
-                        <Flex direction='column' gap={5}>
-                        {dms}
-                        </Flex>
+                        <DmList/>
                     </ScrollArea>
 
                   <ProfileContainer userId={session.userId}/>
