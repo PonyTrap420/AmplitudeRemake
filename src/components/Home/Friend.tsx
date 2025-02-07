@@ -1,8 +1,10 @@
 'use client'
 
 import { FriendsType, User } from "@/types/User";
+import { statusToColor, statusToText } from "@/utils/user";
 import { ActionIcon,Text, Avatar, Flex, Indicator, Space, Tooltip, Menu } from "@mantine/core";
 import { useHover } from "@mantine/hooks";
+import { $Enums } from "@prisma/client";
 import { IconMessage, IconDotsVertical, IconX, IconCheck, IconFriendsOff } from "@tabler/icons-react";
 import axios from "axios";
 import Link from "next/link";
@@ -26,7 +28,7 @@ export default function Friend({friend, type} : {friend:User, type: FriendsType}
         }
     };
 
-    let status : string | undefined;
+    let status : $Enums.UserStatus | string | undefined;
     switch(type){
         case FriendsType.PENDING:
             status = friend.isSender?"Incoming":"Outgoing" + " Friend Request";
@@ -41,12 +43,12 @@ export default function Friend({friend, type} : {friend:User, type: FriendsType}
 
     return <>
     <Flex style={{borderBottom:'2px solid #474747', cursor:'pointer'}} ref={ref} p={10} gap={15} bg={hovered?'dark.4':''}>
-        <Indicator processing withBorder size={14} color='green' offset={8} position='bottom-end'>
+        <Indicator processing={friend.status=='online'} withBorder size={14} color={statusToColor(friend.status)} offset={8} position='bottom-end'>
         <Avatar size={45}></Avatar>
         </Indicator>
         <Flex direction='column'>
             <Text>{friend.displayName}</Text>
-            <Text style={{whiteSpace:'nowrap'}}>{status}</Text>
+            <Text style={{whiteSpace:'nowrap'}}>{statusToText(status)}</Text>
         </Flex>
         <Space miw={0} w="100%"/>
         <Flex mr={20} gap={10}>

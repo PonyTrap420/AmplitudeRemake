@@ -3,13 +3,17 @@ import { IconPhoneCall, IconCameraFilled, IconPinnedFilled, IconUsersPlus, IconS
 import CreateDM from "../Other/CreateDM";
 import { getUser } from "@/services/userServices";
 import { User } from "@/types/User";
+import { statusToColor } from "@/utils/user";
 
 export default async function ChatHeader({id}:{id:string})
 {
     const user : User | null = await getUser(id);
 
+    if(!user)
+        return
+
     return <Flex pr={10} mih={60} mah={60} style={{borderBottom:'2px solid var(--mantine-color-dark-7)'}} gap={20} p={10} w="100%" align='center' justify='start'>
-    <Indicator processing withBorder size={14} color='green' offset={8} position='bottom-end'>
+    <Indicator processing={user.status=='online'} withBorder size={14} color={statusToColor(user?.status)} offset={8} position='bottom-end'>
     <Avatar size={30}></Avatar>
     </Indicator>
     <Text size='xl'>{user?.displayName}</Text>
