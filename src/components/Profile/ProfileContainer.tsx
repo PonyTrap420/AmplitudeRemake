@@ -1,26 +1,31 @@
-import { getUser } from "@/services/userServices";
+'use client'
+
 import { User } from "@/types/User";
 import { Flex, Text, Indicator, Avatar, Space, ActionIcon, PopoverDropdown, Popover, PopoverTarget } from "@mantine/core";
 import { IconMicrophoneFilled, IconHeadset, IconSettingsFilled } from "@tabler/icons-react";
 import ProfilePopup from "./ProfilePopup";
 import Link from "next/link";
-import { verifySession } from "@/lib/dal";
+import axios from "axios";
+import useSWR from "swr";
+import { statusToColor } from "@/utils/user";
 
-export default async function ProfileContainer()
+const fetchUser = async (url:string) => {
+    const res = await axios.get(url);
+    return res.data;
+};
+
+export default function ProfileContainer({userId}:{userId:string})
 {
-    const session = await verifySession()
+    const { data: user, mutate } = useSWR<User>(`/api/user?id=${userId}`, fetchUser);
 
-    if (!session)
-      return
-
-    const user : User | null = await getUser(session.userId);
+    if (!user) return null;
 
     return <Flex style={{zIndex:201}} pos='absolute' bottom={0} align='center' bg='#181818' gap={10} p={7} w="100%">
 
     <Popover position='top-start' offset={{mainAxis:10, crossAxis: -25 }} >
         <PopoverTarget>
             <Flex gap={10} p={5} pr={20} className="rounded-md  hover:bg-[#69696933] hover:cursor-pointer">
-                <Indicator withBorder size={14} color='red' offset={8} position='bottom-end'>
+                <Indicator processing={user.status=='online'} withBorder size={14} color={statusToColor(user.status)} offset={8} position='bottom-end'>
                 <Avatar size={45}></Avatar>
                 </Indicator>
                 <Flex direction='column'>
@@ -31,7 +36,7 @@ export default async function ProfileContainer()
         </PopoverTarget>
         <PopoverDropdown className="rounded-md" bd={0}>
             {user?
-            <ProfilePopup user={user}/>
+            <ProfilePopup user={user} mutate={mutate}/>
             :null}
         </PopoverDropdown>
     </Popover>
