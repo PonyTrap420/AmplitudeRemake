@@ -1,3 +1,4 @@
+import CreateServer from "@/components/Home/CreateServer";
 import Server from "@/components/Home/Server";
 import { Flex, ScrollArea, Divider } from "@mantine/core";
 import { IconBrandDiscordFilled } from "@tabler/icons-react";
@@ -9,7 +10,7 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
 
-  const servers = Array.from({ length: 23 }).map((_, index) => {
+  const servers = Array.from({ length: 2 }).map((_, index) => {
     return <Server key={index}/>
   });
   
@@ -25,6 +26,7 @@ export default function Layout({
             <Divider size='md' w="50%" orientation='horizontal'/>
     
             {servers}
+            <CreateServer/>
         </Flex>
     </ScrollArea>
     {children}
