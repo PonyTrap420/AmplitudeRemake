@@ -23,8 +23,8 @@ export default function DirectMessage({user}:{user:User|undefined})
 
     return  <Link href={`/channels/me/chat/`+user?.id}><Flex style={{cursor:'pointer'}} className="rounded-lg" mr={10} align='center' p={5} bg={hovered?'dark.4':''} ref={ref} gap={15}>
         {user?<>
-        <Indicator processing={user?.status=='online'} withBorder size={14} color={statusToColor(user.status)} offset={8} position='bottom-end'>
-        <Avatar size={45}></Avatar>
+        <Indicator processing={user?.status=='online'} withBorder size={14} color={statusToColor(user.status)} offset={5} position='bottom-end'>
+        <Avatar size={35}></Avatar>
         </Indicator>
         <Flex w="70%" direction='column'>
             <Text>{user.displayName}</Text>

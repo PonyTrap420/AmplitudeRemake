@@ -42,26 +42,32 @@ export default function Friend({friend, type} : {friend:User, type: FriendsType}
     }
 
     return <>
-    <Flex style={{borderBottom:'2px solid #474747', cursor:'pointer'}} ref={ref} p={10} gap={15} bg={hovered?'dark.4':''}>
-        <Indicator processing={friend.status=='online'} withBorder size={14} color={statusToColor(friend.status)} offset={8} position='bottom-end'>
-        <Avatar size={45}></Avatar>
-        </Indicator>
+    <Flex align='center' style={{borderBottom:'2px solid #474747', cursor:'pointer'}} ref={ref} p={10} pr={0} gap={15} bg={hovered?'dark.4':''}>
+        <Flex align='center' gap={10}>
+
+
+            <Indicator processing={friend.status=='online'} withBorder size={14} color={statusToColor(friend.status)} offset={5} position='bottom-end'>
+                <Avatar size={35}></Avatar>
+            </Indicator>
+        </Flex>
+        
         <Flex direction='column'>
-            <Text>{friend.displayName}</Text>
-            <Text style={{whiteSpace:'nowrap'}}>{statusToText(status)}</Text>
+            <Text size='sm'>{friend.displayName}</Text>
+            <Text size='xs' style={{whiteSpace:'nowrap'}}>{statusToText(status)}</Text>
         </Flex>
         <Space miw={0} w="100%"/>
         <Flex mr={20} gap={10}>
+
             {(type === FriendsType.ONLINE || type === FriendsType.ALL) ?<>
                 <Link href={`/channels/me/chat/`+friend.id}>
                 <Tooltip label="Message">
-                        <ActionIcon bg={hovered?'dark.6':''} variant='light' radius='xl' size={45}><IconMessage/></ActionIcon>
+                        <ActionIcon bg={hovered?'dark.6':''} variant='light' radius='xl' size={35}><IconMessage size={20}/></ActionIcon>
                 </Tooltip>
                 </Link>
                 <Menu shadow="md" width={200}>
                     <Menu.Target>
                         <Tooltip label="More">
-                        <ActionIcon bg={hovered?'dark.6':''} variant='light' radius='xl' size={45}><IconDotsVertical/></ActionIcon>
+                        <ActionIcon bg={hovered?'dark.6':''} variant='light' radius='xl' size={35}><IconDotsVertical size={20}/></ActionIcon>
                         </Tooltip>
                     </Menu.Target>
                     <Menu.Dropdown bg="dark.9">
@@ -80,13 +86,13 @@ export default function Friend({friend, type} : {friend:User, type: FriendsType}
                 </Tooltip>
                 : <>
                 {friend.isSender?<><Tooltip label="Accept">
-                    <ActionIcon onClick={() => handleAction('accept')} c={'green'} bg={hovered?'dark.6':''} variant='light' radius='xl' size={45}><IconCheck/></ActionIcon>
+                    <ActionIcon onClick={() => handleAction('accept')} c={'green'} bg={hovered?'dark.6':''} variant='light' radius='xl' size={35}><IconCheck size={20}/></ActionIcon>
                 </Tooltip>
                 <Tooltip label="Reject">
-                    <ActionIcon onClick={() => handleAction('reject')} c={'red'} bg={hovered?'dark.6':''} variant='light' radius='xl' size={45}><IconX/></ActionIcon>
+                    <ActionIcon onClick={() => handleAction('reject')} c={'red'} bg={hovered?'dark.6':''} variant='light' radius='xl' size={35}><IconX size={20}/></ActionIcon>
                 </Tooltip></>:
                 <Tooltip label="Cancel">
-                    <ActionIcon onClick={() => handleAction('cancel')} c={'red'} bg={hovered?'dark.6':''} variant='light' radius='xl' size={45}><IconX/></ActionIcon>
+                    <ActionIcon onClick={() => handleAction('cancel')} c={'red'} bg={hovered?'dark.6':''} variant='light' radius='xl' size={35}><IconX size={20}/></ActionIcon>
                 </Tooltip>
                 }
                 </>}
