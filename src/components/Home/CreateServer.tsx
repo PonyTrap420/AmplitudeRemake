@@ -5,6 +5,8 @@ import { ActionIcon, Button, Flex, Modal, ScrollArea, Space, Text, TextInput, Ti
 import { useDisclosure } from "@mantine/hooks";
 import { IconArrowRight, IconPlus, IconX, IconArrowLeft } from "@tabler/icons-react";
 import Image from "next/image";
+import axios from 'axios';
+import { useServers } from '@/hooks/useServers';
 
 function CreateServerTemplate({name, icon, onclick}: {name: string, icon: string, onclick: () => void}) {
     return (
@@ -39,6 +41,7 @@ export default function CreateServer() {
     const [createServerState, setCreateServerState] = useState<CreateServerState>(CreateServerState.HOME);
     const [serverName, setServerName] = useState('');
     const [selectedTemplate, setSelectedTemplate] = useState('');
+    const { mutate } = useServers();
 
     const handleTemplateClick = (template: string) => {
         setSelectedTemplate(template);
@@ -50,8 +53,35 @@ export default function CreateServer() {
         setServerName('');
     };
 
-    const handleCreateServer = () => {
-        console.log('Creating server:', { name: serverName, template: selectedTemplate });
+    const handleCreateServer = async () => {
+        try {
+            const response = await axios.post('/api/server', {
+                name: serverName,
+                template: selectedTemplate
+            });
+            
+            console.log('Server created:', response.data);
+            await mutate();
+        } catch (error) {
+            console.error('Error creating server:', error);
+        }
+        
+        close();
+        setCreateServerState(CreateServerState.HOME);
+        setServerName('');
+    };
+
+    const handleJoinServer = async () => {
+        try {
+            const response = await axios.post('/api/servers/join', {
+                inviteLink: serverName
+            });
+            
+            console.log('Server joined:', response.data);
+            await mutate();
+        } catch (error) {
+            console.error('Error joining server:', error);
+        }
         close();
         setCreateServerState(CreateServerState.HOME);
         setServerName('');
@@ -247,13 +277,13 @@ export default function CreateServer() {
                                     <Flex w='90%' gap={20} direction='column' mt={20} mb={20}>
                                         <TextInput
                                             label="INVITE LINK"
-                                            placeholder="https://amplitude.com/hTKzmak"
+                                            placeholder="https://amplitude.com/invite/hTKzmak"
                                             value={serverName}
                                             onChange={(e) => setServerName(e.target.value)}
                                             required
                                         />
                                         <Button 
-                                            onClick={handleCreateServer}
+                                            onClick={handleJoinServer}
                                             disabled={!serverName.trim()}
                                         >
                                             Join Server
