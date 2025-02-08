@@ -56,23 +56,25 @@ export default function ProfilePopup({ user, mutate }: { user: User; mutate: () 
         }
     };
 
-    return <Flex direction='column' mb={5} h={430} w={330}>
+    return <Flex direction='column' mb={5} h={370} w={270}>
         <Flex h={200} w={300}>
             <Box className="rounded-t-md" pos='absolute' h={100} top={0} left={0} bg='dark.2' w="100%"></Box>
-            <Box mt={35}>
-            <Indicator styles={{indicator:{border:'7px solid #2e2e2e'}}} withBorder size={35} color='green' offset={15} position='bottom-end'>
-            <Avatar src={user.avatar} size={100}></Avatar></Indicator>
+            <Box mt={45}>
+            <Indicator styles={{indicator:{border:'7px solid #2e2e2e'}}} withBorder size={30} color='green' offset={10} position='bottom-end'>
+            <Avatar src={user.avatar} size={80}></Avatar></Indicator>
             </Box>
         </Flex>
-            <Title c='white' size="h3">{user.displayName}</Title>
-            <Text size="lg" mb={15}>{user.username}</Text>
-        <Flex gap={20} direction={'column'}>
+
+        <Title c='white' size="h4">{user.displayName}</Title>
+        <Text size="md" mb={10}>{user.username}</Text>
+        
+        <Flex gap={10} direction={'column'}>
             <Flex bg={'dark.7'} className="rounded-lg" p={10} direction={'column'}>
-                <Button size='md' fw='normal'  pl={5} variant='subtle' justify='start' leftSection={<IconEdit/>}>Edit Profile</Button>
+                <Button size='sm' fw='normal'  pl={5} variant='subtle' justify='start' leftSection={<IconEdit/>}>Edit Profile</Button>
                 <Divider mt={10} mb={10} orientation='horizontal' size={2}></Divider>
                 <Menu position="right" >
                     <MenuTarget>
-                        <Button size='md' fw='normal' rightSection={<IconArrowRight/>} pl={5} variant='subtle' justify='space-between'>{getStatus(user.status)}</Button>
+                        <Button size='sm' fw='normal' rightSection={<IconArrowRight/>} pl={5} variant='subtle' justify='space-between'>{getStatus(user.status)}</Button>
                     </MenuTarget>
                     <Menu.Dropdown>
                         <Menu.Item onClick={() => handleStatusChange("online")} leftSection={<IconCircleFilled size={13} color="#23a55a"/>}>Online</Menu.Item>
@@ -86,7 +88,7 @@ export default function ProfilePopup({ user, mutate }: { user: User; mutate: () 
             </Flex>
             
             <Flex bg={'dark.7'} className= "rounded-lg" p={10} direction={'column'}>
-            <Button  onClick={() => clipboard.copy(user.id)} size='md' fw='normal' pl={5} variant='subtle' justify='start' leftSection={<IconId/>}>Copy User ID</Button>
+            <Button  onClick={() => clipboard.copy(user.id)} size='sm' fw='normal' pl={5} variant='subtle' justify='start' leftSection={<IconId/>}>Copy User ID</Button>
             </Flex>
         </Flex>
     </Flex>
