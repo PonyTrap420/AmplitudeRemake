@@ -97,7 +97,7 @@ export default function CreateServer() {
     return (
         <>
             <div className="cursor-pointer transition-all duration-200 p-2.5 bg-[#353636] rounded-[100%] ease hover:bg-[#1a56d9] hover:rounded-[35%]">
-                <IconPlus onClick={open} color="white" size={40} />
+                <IconPlus onClick={open} color="white" size={30} />
             </div>
 
             <Modal 
