@@ -20,7 +20,7 @@ export default function ProfileContainer({userId}:{userId:string})
 
     if (!user) return null;
 
-    return <Flex style={{zIndex:201}} pos='absolute' bottom={0} align='center' bg='#181818' gap={0} p={4} w="100%">
+    return <Flex style={{zIndex:11}} pos='absolute' bottom={0} align='center' bg='#181818' gap={0} p={4} w="100%">
 
     <Popover position='top-start' offset={{mainAxis:10, crossAxis: -25 }} >
         <PopoverTarget>
