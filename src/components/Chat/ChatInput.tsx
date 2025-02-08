@@ -12,11 +12,12 @@ import { useState } from "react";
 import { useSWRConfig } from "swr";
 
 type ChatInputProps = {
-    channelId?: string;  // For channels
-    user?: User;         // For direct messages
+    channelId?: string;    // For channels
+    user: User;            // Current user
+    otherUser?: User;      // For direct messages
 }
 
-export default function ChatInput({ channelId, user }: ChatInputProps)
+export default function ChatInput({ channelId, user, otherUser }: ChatInputProps)
 {
     const { mutate } = useSWRConfig()
     const [pickerOpened, setPickerOpened] = useState(false);
@@ -24,8 +25,14 @@ export default function ChatInput({ channelId, user }: ChatInputProps)
     const [textValue, setTextValue] = useState("");
     const params = useParams<{ id: string; }>()
 
+    const placeholder = channelId 
+        ? "Message #" + channelId 
+        : otherUser 
+            ? `Message @${otherUser.displayName}`
+            : "Message";
+
     const handleKeyPress = async (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Enter' && textValue.trim() !== '' && user) {
+        if (event.key === 'Enter' && textValue.trim() !== '') {
             const endpoint = channelId ? `/api/channels/${channelId}/messages` : `/api/chat/${params.id}`;
 
             const newMessage: Message = {
@@ -57,11 +64,11 @@ export default function ChatInput({ channelId, user }: ChatInputProps)
     };
 
     return <>
-      <Flex p={20} pt={0} align='start' pos='absolute' bottom={0} mih={80} h={80} w="100%"> 
-            <TextInput onKeyDown={handleKeyPress} onChange={(event) => setTextValue(event.currentTarget.value)} value={textValue} styles={{input:{backgroundColor:'var(--mantine-color-dark-4)'}}} size={'lg'} w="100%" leftSection={<IconCirclePlusFilled size={30}/>} placeholder="Message @jd"/>
-            <Flex right={25} bottom={35} bg={'dark.4'} pos='absolute' miw={80}>
-                <ActionIcon h={40} w={40}  variant='transparent'><IconGif size={30}/></ActionIcon>
-                <ActionIcon onClick={()=>setPickerOpened(true)} h={40} w={40}  variant='transparent'><IconMoodHappyFilled size={30}/></ActionIcon>       
+      <Flex p={20} pt={0} align='start' pos='absolute' bottom={0} mih={70} h={70} w="100%"> 
+            <TextInput onKeyDown={handleKeyPress} onChange={(event) => setTextValue(event.currentTarget.value)} value={textValue} styles={{input:{backgroundColor:'var(--mantine-color-dark-4)'}}} size='md' w="100%" leftSection={<IconCirclePlusFilled size={30}/>} placeholder={placeholder}/>
+            <Flex right={25} bottom={29} bg={'dark.4'} pos='absolute' miw={80}>
+                <ActionIcon h={40} w={40}  variant='transparent'><IconGif size={25}/></ActionIcon>
+                <ActionIcon onClick={()=>setPickerOpened(true)} h={40} w={40}  variant='transparent'><IconMoodHappyFilled size={25}/></ActionIcon>       
             </Flex>
         </Flex>
         

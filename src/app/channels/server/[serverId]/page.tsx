@@ -31,9 +31,9 @@ export default function ServerPage({ params }: { params: { serverId: string } })
     const currentChannel = server.channels.find(c => c.id === selectedChannel);
 
     return (
-        <Flex w="100%" h="100vh" bg="#0C0C0C">
+        <Flex w="100%" h="100vh">
             {/* Channels Sidebar */}
-            <Box w={240} bg="#0C0C0C" h="100%" style={{ borderRight: '1px solid #0C0C0C' }}>
+            <Box w={240} bg="#1f1f1f" h="100%" style={{ borderRight: '1px solid #0C0C0C' }}>
                 <ScrollArea h="100%" type="hover" scrollbarSize={8} 
                     styles={{
                         scrollbar: {
@@ -61,7 +61,7 @@ export default function ServerPage({ params }: { params: { serverId: string } })
                                     style={(theme) => ({
                                         borderRadius: theme.radius.sm,
                                         cursor: 'pointer',
-                                        backgroundColor: channel.id === selectedChannel ? '#0C0C0C' : 'transparent',
+                                        backgroundColor: channel.id === selectedChannel ? '#424242' : 'transparent',
                                         color: channel.id === selectedChannel ? '#F2F3F5' : '#949BA4',
                                         '&:hover': {
                                             backgroundColor: channel.id === selectedChannel ? '#0C0C0C' : '#35373C',

@@ -17,7 +17,7 @@ export default function Layout({
   return (<>
     <ScrollArea type='never' miw={80} maw={80} scrollbars='y'>
         <Flex align='center' gap={10} direction='column'>
-            <div className="cursor-pointer transition-all duration-200 p-2.5 bg-[#161616] rounded-[100%] ease hover:bg-[#1a56d9] hover:rounded-[35%]">
+            <div className="mt-1 cursor-pointer transition-all duration-200 p-2.5 bg-[#353636] rounded-[100%] ease hover:bg-[#1a56d9] hover:rounded-[35%]">
                 <Link href="/">
                     <IconBrandDiscordFilled color="white" size={35}/>
                 </Link>
