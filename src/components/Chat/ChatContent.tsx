@@ -5,19 +5,29 @@ import useSWR from 'swr';
 import Chat from '@/components/Chat/Chat';
 import ChatSkeleton from '@/components/Chat/ChatSkeleton';
 import axios from 'axios';
+import { Message } from "@/types/Message";
 
 const fetchChat = async (url: string, id: string|unknown) => {
   const response = await axios.get(`${url}${id}`);
   return response.data;
 };
 
-
-export default function ChatContent() {
-  const { id } = useParams();
-  const { data: data, error } = useSWR([`/api/chat/`, `${id}`], ([url, id]) => fetchChat(url, id),{refreshInterval:2000});
+export default function ChatContent({ messages = [] }: { messages?: Message[] }) {
+  const params = useParams();
+  const isServerChannel = 'serverId' in params;
+  
+  // Only fetch for direct messages, not server channels
+  const { data, error } = useSWR(
+    !isServerChannel ? [`/api/chat/`, params.id] : null,
+    ([url, id]) => fetchChat(url, id),
+    { refreshInterval: 2000 }
+  );
 
   if (error) return <div>Failed to load messages</div>;
-  if (!data) return <ChatSkeleton />;
+  if (!isServerChannel && !data) return <ChatSkeleton />;
 
-  return <Chat messages={data.messages?data.messages:[]} />;
+  // Use passed messages for server channels, data.messages for direct messages
+  const displayMessages = isServerChannel ? messages : (data?.messages || []);
+
+  return <Chat messages={displayMessages} />;
 }
