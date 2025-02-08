@@ -20,14 +20,15 @@ export default function Server({ server }: ServerProps) {
 
     return (
         <Avatar 
-            size={60} 
+            size={50} 
             ref={ref} 
             style={{transition:'0.2s ease-out',cursor:'pointer'}} 
             radius={hovered ? 'lg' : 'xl'}
             title={server.name}
             onClick={handleClick}
         >
-            <IconUser size={40}/>
+            <IconUser size={30}/>
         </Avatar>
     );
+
 }
