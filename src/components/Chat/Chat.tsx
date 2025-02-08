@@ -8,7 +8,7 @@ import useContextMenu from "@/hooks/useContextMenu";
 import { IconCopy, IconCornerUpLeft, IconCornerUpRight, IconPencil, IconPinFilled } from "@tabler/icons-react";
 import { useEffect, useRef } from "react";
 
-export default function Chat({messages}:{messages:Message[]}) {
+export default function Chat({ messages = [] }: { messages?: Message[] }) {
   const viewport = useRef<HTMLDivElement>(null);
 
   let firstChecker = '';

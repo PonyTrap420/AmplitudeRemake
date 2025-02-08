@@ -11,7 +11,12 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 import { useSWRConfig } from "swr";
 
-export default function ChatInput({user}:{user: User})
+type ChatInputProps = {
+    channelId?: string;  // For channels
+    user?: User;         // For direct messages
+}
+
+export default function ChatInput({ channelId, user }: ChatInputProps)
 {
     const { mutate } = useSWRConfig()
     const [pickerOpened, setPickerOpened] = useState(false);
@@ -20,33 +25,36 @@ export default function ChatInput({user}:{user: User})
     const params = useParams<{ id: string; }>()
 
     const handleKeyPress = async (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Enter' && textValue.trim() !== '') {
-          const newMessage: Message = {
-            id: Number(Date.now().toString()),
-            content: textValue,
-            author:user,
-            authorId: user.id,
-            timestamp: new Date(),
-          };
-          
-          mutate<unknown>([`/api/chat/`, `${params.id}`],(prevData:{messages:Message[]})=>{
-            return { messages: [...prevData.messages, newMessage] };
-          },{revalidate:false});
+        if (event.key === 'Enter' && textValue.trim() !== '' && user) {
+            const endpoint = channelId ? `/api/channels/${channelId}/messages` : `/api/chat/${params.id}`;
 
-            try {
-              const response = await axios.post(`/api/chat/${params.id}`, {
+            const newMessage: Message = {
+                id: Number(Date.now().toString()),
                 content: textValue,
-              });
-        
-              if (response.status === 201)
+                author: user,
+                authorId: user.id,
+                timestamp: new Date(),
+            };
+            
+            try {
+                await axios.post(endpoint, { content: textValue });
+                if (channelId) {
+                    await mutate(`/api/channels/${channelId}/messages`, 
+                        (prevData: Message[] = []) => [...prevData, newMessage]
+                    );
+                } else {
+                    await mutate([`/api/chat/`, params.id], 
+                        (prevData: { messages: Message[] } = { messages: [] }) => ({
+                            messages: [...prevData.messages, newMessage]
+                        })
+                    );
+                }
                 setTextValue('');
-              else
-                console.error('Failed to send message');
             } catch (error) {
-              console.error('Error sending message', error);
+                console.error('Error sending message', error);
             }
-          }
-      };
+        }
+    };
 
     return <>
       <Flex p={20} pt={0} align='start' pos='absolute' bottom={0} mih={80} h={80} w="100%"> 

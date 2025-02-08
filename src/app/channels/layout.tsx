@@ -1,5 +1,8 @@
+'use client'
+
 import CreateServer from "@/components/Home/CreateServer";
 import Server from "@/components/Home/Server";
+import { useServers } from "@/hooks/useServers";
 import { Flex, ScrollArea, Divider } from "@mantine/core";
 import { IconBrandDiscordFilled } from "@tabler/icons-react";
 import Link from "next/link";
@@ -9,10 +12,7 @@ export default function Layout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
-  const servers = Array.from({ length: 2 }).map((_, index) => {
-    return <Server key={index}/>
-  });
+  const { servers } = useServers();
   
   return (<>
     <ScrollArea type='never' miw={100} maw={100} scrollbars='y'>
@@ -25,8 +25,10 @@ export default function Layout({
     
             <Divider size='md' w="50%" orientation='horizontal'/>
     
-            {servers}
-            <CreateServer/>
+            {servers?.map((server) => (
+                <Server key={server.id} server={server} />
+            ))}
+            <CreateServer />
         </Flex>
     </ScrollArea>
     {children}
