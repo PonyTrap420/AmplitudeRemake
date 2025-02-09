@@ -42,6 +42,7 @@ export default function ServerPageClient({ params, currentUser }: ServerPageProp
             <Flex bg={'#1f1f1f'} pos='relative' miw={250} maw={250} align='center' direction='column'>
                 <ServerSidebar 
                     serverName={server.name}
+                    serverId={server.id}
                     channels={server.channels}
                     selectedChannel={selectedChannel}
                     isOwner={isOwner}

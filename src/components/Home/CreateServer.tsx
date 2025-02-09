@@ -78,8 +78,9 @@ function ImageUpload({ onImageSelect }: { onImageSelect: (file: File) => void })
                         width={80} 
                         height={80} 
                         alt="preview"
-                        style={{ borderRadius: '50%', objectFit: 'cover' }}
+                        style={{width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover' }}
                     />
+
                 ) : (
                     <Image 
                         src="/svg/upload-image.svg" 
