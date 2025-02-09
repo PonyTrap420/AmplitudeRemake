@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Flex, Text, Loader, Modal, Button, Image, Stack } from "@mantine/core";
 
 type ServerInfo = {
@@ -29,8 +29,12 @@ export default function InvitePage({ params }: { params: { code: string } }) {
                         imageUrl: serverData.imageUrl
                     });
                 }
-            } catch (error: any) {
-                setError(error.response?.data?.error || 'Failed to load server information');
+            } catch (error) {
+                if (error instanceof AxiosError) {
+                    setError(error.response?.data?.error || 'Failed to load server information');
+                } else {
+                    setError('Failed to load server information');
+                }
             } finally {
                 setLoading(false);
             }
@@ -43,8 +47,12 @@ export default function InvitePage({ params }: { params: { code: string } }) {
         try {
             await axios.post(`/api/server/${serverInfo?.id}/invite`);
             router.push(`/channels/server/${serverInfo?.id}`);
-        } catch (error: any) {
-            setError(error.response?.data?.error || 'Failed to join server');
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                setError(error.response?.data?.error || 'Failed to join server');
+            } else {
+                setError('Failed to join server');
+            }
         }
     };
 
