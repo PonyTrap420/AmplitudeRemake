@@ -13,14 +13,16 @@ import { useSWRConfig } from "swr";
 
 type ChatInputProps = {
     channelId?: string;    // For channels
-    user: User;            // Current user
     otherUser?: User;      // For direct messages
+    user?: User;
 }
 
 export default function ChatInput({ channelId, user, otherUser }: ChatInputProps)
+
 {
     const { mutate } = useSWRConfig()
     const [pickerOpened, setPickerOpened] = useState(false);
+
     const ref = useClickOutside(() => setPickerOpened(false));
     const [textValue, setTextValue] = useState("");
     const params = useParams<{ id: string; }>()
@@ -35,23 +37,38 @@ export default function ChatInput({ channelId, user, otherUser }: ChatInputProps
         if (event.key === 'Enter' && textValue.trim() !== '') {
             const endpoint = channelId ? `/api/channels/${channelId}/messages` : `/api/chat/${params.id}`;
 
-            const newMessage: Message = {
+            const newMessage: Partial<Message> = {
                 id: Number(Date.now().toString()),
                 content: textValue,
-                author: user,
-                authorId: user.id,
+                authorId: user?.id,
+                author: user ? {
+                    id: user.id,
+                    username: user.username,
+                    displayName: user.displayName,
+                    avatar: user.avatar,
+                    banner: user.banner,
+                    accent_color: user.accent_color,
+                    banner_color: user.banner_color,
+                    status: user.status  
+                }: undefined,
+                pinned: false,
+                meantion_everyone: false,
+                mentions: [],
+                attachments: [],
+                embeds: [],
                 timestamp: new Date(),
             };
             
+
             try {
                 await axios.post(endpoint, { content: textValue });
                 if (channelId) {
                     await mutate(`/api/channels/${channelId}/messages`, 
-                        (prevData: Message[] = []) => [...prevData, newMessage]
+                        (prevData: Partial<Message>[] = []) => [...prevData, newMessage]
                     );
                 } else {
                     await mutate([`/api/chat/`, params.id], 
-                        (prevData: { messages: Message[] } = { messages: [] }) => ({
+                        (prevData: { messages: Partial<Message>[] } = { messages: [] }) => ({
                             messages: [...prevData.messages, newMessage]
                         })
                     );

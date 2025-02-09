@@ -29,10 +29,11 @@ export default function ProfileContainer({userId}:{userId:string})
                 <Avatar size={35}></Avatar>
                 </Indicator>
                 <Flex direction='column'>
-                    <Text size='sm' h={20} fw='bold'>{user?.displayName?user.displayName:user?.username}</Text>
-                    <Text size='xs'>{user?.username}</Text>
+                    <Text size='sm' h={20} fw='bold' style={{whiteSpace:'nowrap'}}>{user?.displayName?user.displayName:user?.username}</Text>
+                    <Text size='xs' style={{whiteSpace:'nowrap'}}>{user?.username}</Text>
                 </Flex>
             </Flex>
+
 
         </PopoverTarget>
         <PopoverDropdown className="rounded-md" bd={0}>

@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react';
-import { ActionIcon, Button, Flex, Modal, ScrollArea, Space, Text, TextInput, Title, Transition } from "@mantine/core";
+import { useState, useRef } from 'react';
+import { ActionIcon, Button, Flex, Modal, ScrollArea, Space, Text, TextInput, Title, Transition, Box } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconArrowRight, IconPlus, IconX, IconArrowLeft } from "@tabler/icons-react";
 import Image from "next/image";
@@ -30,6 +30,69 @@ function CreateServerTemplate({name, icon, onclick}: {name: string, icon: string
     );
 }
 
+function ImageUpload({ onImageSelect }: { onImageSelect: (file: File) => void }) {
+    const [preview, setPreview] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            // Check file size (5MB = 5 * 1024 * 1024 bytes)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File size must be less than 5MB');
+                return;
+            }
+
+            onImageSelect(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    return (
+        <Box style={{ textAlign: 'center' }}>
+            <input
+                ref={fileInputRef}
+                type="file"
+                id="server-image"
+                accept="image/*"
+                style={{ display: 'none' }}
+                onChange={handleFileSelect}
+            />
+            <ActionIcon 
+                variant="transparent" 
+                size={80}
+                style={{ cursor: 'pointer' }}
+                onClick={handleClick}
+            >
+                {preview ? (
+                    <Image 
+                        src={preview} 
+                        width={80} 
+                        height={80} 
+                        alt="preview"
+                        style={{ borderRadius: '50%', objectFit: 'cover' }}
+                    />
+                ) : (
+                    <Image 
+                        src="/svg/upload-image.svg" 
+                        width={80} 
+                        height={80} 
+                        alt="upload"
+                    />
+                )}
+            </ActionIcon>
+        </Box>
+    );
+}
+
 enum CreateServerState{
     HOME,
     CREATE,
@@ -41,6 +104,7 @@ export default function CreateServer() {
     const [createServerState, setCreateServerState] = useState<CreateServerState>(CreateServerState.HOME);
     const [serverName, setServerName] = useState('');
     const [selectedTemplate, setSelectedTemplate] = useState('');
+    const [serverImage, setServerImage] = useState<File | null>(null);
     const { mutate } = useServers();
 
     const handleTemplateClick = (template: string) => {
@@ -55,11 +119,18 @@ export default function CreateServer() {
 
     const handleCreateServer = async () => {
         try {
-            const response = await axios.post('/api/server', {
-                name: serverName,
-                template: selectedTemplate
-            });
+            const formData = new FormData();
+            formData.append('name', serverName);
+            formData.append('template', selectedTemplate);
+            if (serverImage) {
+                formData.append('image', serverImage);
+            }
             
+            const response = await axios.post('/api/server', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
             console.log('Server created:', response.data);
             await mutate();
         } catch (error) {
@@ -69,6 +140,7 @@ export default function CreateServer() {
         close();
         setCreateServerState(CreateServerState.HOME);
         setServerName('');
+        setServerImage(null);
     };
 
     const handleJoinServer = async () => {
@@ -108,7 +180,7 @@ export default function CreateServer() {
                     content: { 
                         overflow: 'hidden',
                         padding: '24px',
-                        minHeight: '300px',
+                        minHeight: createServerState == CreateServerState.CREATE ? '400px' : '300px'
                     },
                     header: {
                         margin: 0,
@@ -228,20 +300,19 @@ export default function CreateServer() {
                                         You can always change it later.
                                     </Text>
                                     <Flex w='90%' gap={20} direction='column' mt={20} mb={20}>
+                                        <ImageUpload onImageSelect={setServerImage} />
                                         <TextInput
                                             label="SERVER NAME"
-                                            placeholder="Enter server name"
+                                            placeholder="My Cool Server"
                                             value={serverName}
                                             onChange={(e) => setServerName(e.target.value)}
                                             required
                                         />
-                                        <Button 
-                                            onClick={handleCreateServer}
-                                            disabled={!serverName.trim()}
-                                        >
+                                        <Button onClick={handleCreateServer} disabled={!serverName.trim()}>
                                             Create Server
                                         </Button>
                                     </Flex>
+
                                 </Flex>
                             </div>
                         )}

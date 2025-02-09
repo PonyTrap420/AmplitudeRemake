@@ -10,6 +10,7 @@ generator client {
 model Server {
   id          String     @id @default(auto()) @map("_id") @db.ObjectId
   name        String
+  imageUrl    String?
 
   owner       User       @relation("Owner", fields: [ownerId], references: [id])
   ownerId     String     @db.ObjectId
