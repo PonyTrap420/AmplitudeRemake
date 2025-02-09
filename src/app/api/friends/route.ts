@@ -183,8 +183,7 @@ export async function GET(request: Request) {
         avatar:true,
         banner:true,
         accent_color:true,
-        banner_color:true,
-        status:true
+        banner_color:true
     }
   });
 

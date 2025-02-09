@@ -10,7 +10,6 @@ generator client {
 model Server {
   id          String     @id @default(auto()) @map("_id") @db.ObjectId
   name        String
-  imageUrl    String?
 
   owner       User       @relation("Owner", fields: [ownerId], references: [id])
   ownerId     String     @db.ObjectId
@@ -18,7 +17,6 @@ model Server {
   membersIDs String[]   @db.ObjectId
   members     User[]     @relation("Members",fields: [membersIDs], references: [id])
   channels    Channel[]
-  invites     Invite[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
@@ -133,17 +131,4 @@ model Thumbnail {
   embed      Embed     @relation(fields: [embedId], references: [id])
 
   @@map("thumbnails")
-}
-
-model Invite {
-    id        String   @id @default(auto()) @map("_id") @db.ObjectId
-    code      String   @unique
-    serverId  String   @db.ObjectId
-    server    Server   @relation(fields: [serverId], references: [id])
-    createdAt DateTime @default(now())
-    expiresAt DateTime
-    uses      Int      @default(0)
-    maxUses   Int      @default(100)
-
-    @@map("invites")
 }

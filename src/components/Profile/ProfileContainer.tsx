@@ -1,44 +1,37 @@
-'use client'
-
+import { getUser } from "@/services/userServices";
 import { User } from "@/types/User";
 import { Flex, Text, Indicator, Avatar, Space, ActionIcon, PopoverDropdown, Popover, PopoverTarget } from "@mantine/core";
 import { IconMicrophoneFilled, IconHeadset, IconSettingsFilled } from "@tabler/icons-react";
 import ProfilePopup from "./ProfilePopup";
 import Link from "next/link";
-import axios from "axios";
-import useSWR from "swr";
-import { statusToColor } from "@/utils/user";
+import { verifySession } from "@/lib/dal";
 
-const fetchUser = async (url:string) => {
-    const res = await axios.get(url);
-    return res.data;
-};
-
-export default function ProfileContainer({userId}:{userId:string})
+export default async function ProfileContainer()
 {
-    const { data: user, mutate } = useSWR<User>(`/api/user?id=${userId}`, fetchUser);
+    const session = await verifySession()
 
-    if (!user) return null;
+    if (!session)
+      return
 
-    return <Flex style={{zIndex:11}} pos='absolute' bottom={0} align='center' bg='#181818' gap={0} p={4} w="100%">
+    const user : User | null = await getUser(session.userId);
+
+    return <Flex style={{zIndex:201}} pos='absolute' bottom={0} align='center' bg='#181818' gap={10} p={7} w="100%">
 
     <Popover position='top-start' offset={{mainAxis:10, crossAxis: -25 }} >
         <PopoverTarget>
-            <Flex gap={10} p={5} pr={10} className="rounded-md  hover:bg-[#69696933] hover:cursor-pointer">
-                <Indicator processing={user.status=='online'} withBorder size={14} color={statusToColor(user.status)} offset={5} position='bottom-end'>
-                <Avatar size={35}></Avatar>
+            <Flex gap={10} p={5} pr={20} className="rounded-md  hover:bg-[#69696933] hover:cursor-pointer">
+                <Indicator withBorder size={14} color='red' offset={8} position='bottom-end'>
+                <Avatar size={45}></Avatar>
                 </Indicator>
                 <Flex direction='column'>
-                    <Text size='sm' h={20} fw='bold' style={{whiteSpace:'nowrap'}}>{user?.displayName?user.displayName:user?.username}</Text>
-                    <Text size='xs' style={{whiteSpace:'nowrap'}}>{user?.username}</Text>
+                    <Text h={20} fw='bold'>{user?.displayName?user.displayName:user?.username}</Text>
+                    <Text>{user?.username}</Text>
                 </Flex>
             </Flex>
-
-
         </PopoverTarget>
         <PopoverDropdown className="rounded-md" bd={0}>
             {user?
-            <ProfilePopup user={user} mutate={mutate}/>
+            <ProfilePopup user={user}/>
             :null}
         </PopoverDropdown>
     </Popover>
@@ -46,17 +39,16 @@ export default function ProfileContainer({userId}:{userId:string})
 
     <Space miw={0} w="100%"/>
 
-    <Flex gap={0} pr={7}>
-        <ActionIcon size={30} variant='subtle'>
-            <IconMicrophoneFilled size={20}/>
+    <Flex gap={2}>
+        <ActionIcon size={35} variant='subtle'>
+            <IconMicrophoneFilled/>
         </ActionIcon>
-        <ActionIcon size={30} variant='subtle'>
-            <IconHeadset size={20}/>
-
+        <ActionIcon size={35} variant='subtle'>
+            <IconHeadset/>
         </ActionIcon>
         <Link href='/settings' replace>
-        <ActionIcon size={30} variant='subtle'>
-            <IconSettingsFilled size={20}/>
+        <ActionIcon size={35} variant='subtle'>
+            <IconSettingsFilled/>
         </ActionIcon>
         </Link>
     </Flex>

@@ -9,7 +9,7 @@ export function ContextMenuButton({text,rightSection,color}:{text:string,rightSe
 export default function ContextMenu({children, location}:{children:ReactNode,location:{x:number, y:number}}){
     
     return (
-      <Flex style={{zIndex:10}} className="rounded-md" pos='absolute' p={10} bg="dark.9" direction='column' top={location.y} left={location.x} gap={10} w={200}>
+      <Flex style={{zIndex:200}} className="rounded-md" pos='absolute' p={10} bg="dark.9" direction='column' top={location.y} left={location.x} gap={10} w={200}>
           {children}
         </Flex>
     )
