@@ -5,6 +5,7 @@ import axios from 'axios';
 export type Server = {
     id: string;
     name: string;
+    imageUrl: string | null;
     ownerId: string;
     membersIDs: string[];
     createdAt: Date;

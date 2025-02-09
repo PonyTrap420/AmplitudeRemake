@@ -52,11 +52,12 @@ export default function Friend({friend, type} : {friend:User, type: FriendsType}
         </Flex>
         
         <Flex direction='column'>
-            <Text size='sm'>{friend.displayName}</Text>
+            <Text size='sm' style={{whiteSpace:'nowrap'}}>{friend.displayName}</Text>
             <Text size='xs' style={{whiteSpace:'nowrap'}}>{statusToText(status)}</Text>
         </Flex>
         <Space miw={0} w="100%"/>
         <Flex mr={20} gap={10}>
+
 
             {(type === FriendsType.ONLINE || type === FriendsType.ALL) ?<>
                 <Link href={`/channels/me/chat/`+friend.id}>

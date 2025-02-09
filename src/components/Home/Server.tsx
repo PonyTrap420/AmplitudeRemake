@@ -22,13 +22,17 @@ export default function Server({ server }: ServerProps) {
         <Avatar 
             size={50} 
             ref={ref} 
-            style={{transition:'0.2s ease-out',cursor:'pointer'}} 
+            style={{
+                transition:'0.2s ease-out',
+                cursor:'pointer',
+                backgroundSize: 'cover'
+            }} 
             radius={hovered ? 'lg' : 'xl'}
             title={server.name}
             onClick={handleClick}
+            src={server.imageUrl}
         >
-            <IconUser size={30}/>
+            {!server.imageUrl && <IconUser size={30}/>}
         </Avatar>
     );
-
 }

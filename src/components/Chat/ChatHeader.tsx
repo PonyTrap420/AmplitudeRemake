@@ -35,7 +35,7 @@ export default function ChatHeader({ type, name, user }: ChatHeaderProps) {
             <Indicator processing={user.status=='online'} withBorder size={14} color={statusToColor(user.status)} offset={8} position='bottom-end'>
                 <Avatar size={30}></Avatar>
             </Indicator>
-            <Text size='xl'>{user.displayName}</Text>
+            <Text style={{whiteSpace:'nowrap'}} size='xl'>{user.displayName}</Text>
             <Space miw={0} w="100%"/>
             <Flex gap={10} pr={0} justify='center' h={"100%"} align='center' p={20}>
                 <ActionIcon h={50} w={50} variant='transparent'><IconPhoneCall size={30}/></ActionIcon>
