@@ -43,19 +43,22 @@ export default function ServerContextMenu({ serverName, serverId, isOwner }: Ser
         <>
             <Menu shadow="md" width={200}>
                 <Menu.Target>
-                    <UnstyledButton 
+                    <UnstyledButton
+                        mah={45} 
+                        mih={45}
                         w="100%" 
-                        p="md"
+                        p="xs"
                         style={{
                             borderBottom: '2px solid var(--mantine-color-dark-7)',
                             '&:hover': { backgroundColor: '#2a2a2a' }
                         }}
                     >
                         <Group justify="space-between">
-                            <Title order={4} c="#F2F3F5">{serverName}</Title>
+                            <Title size='sm' order={4} c="#F2F3F5">{serverName}</Title>
                             <IconChevronDown size={20} color="#949BA4" />
                         </Group>
                     </UnstyledButton>
+
                 </Menu.Target>
 
                 <Menu.Dropdown>
