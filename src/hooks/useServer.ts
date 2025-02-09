@@ -1,15 +1,18 @@
 import useSWR from 'swr';
 import axios from 'axios';
 import { Server } from './useServers';
+import { Channel } from '@/types/Channel';
 
-export type Channel = {
+export type Category = {
     id: string;
     name: string;
-    serverId: string;
+    channels: Channel[];
+    position: number;
 };
 
 export type ServerWithChannels = Server & {
     channels: Channel[];
+    categories: Category[];
 };
 
 const fetcher = (url: string) => axios.get(url).then(res => res.data);

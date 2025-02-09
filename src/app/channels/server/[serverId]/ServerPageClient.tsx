@@ -44,6 +44,7 @@ export default function ServerPageClient({ params, currentUser }: ServerPageProp
                     serverName={server.name}
                     serverId={server.id}
                     channels={server.channels}
+                    categories={server.categories}
                     selectedChannel={selectedChannel}
                     isOwner={isOwner}
                     onChannelSelect={setSelectedChannel}
