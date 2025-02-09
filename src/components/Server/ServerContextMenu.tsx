@@ -4,7 +4,7 @@ import { Menu, UnstyledButton, Group, Title, Modal, Text, Button, Stack } from "
 import { IconChevronDown, IconSettings, IconUserPlus, IconTrash, IconLogout, IconFolderPlus, IconMessagePlus } from "@tabler/icons-react";
 import { useState } from "react";
 import InviteModal from "./InviteModal";
-import axios from "axios";
+import axios, { AxiosError } from 'axios';
 import { useRouter } from "next/navigation";
 import { useSWRConfig } from 'swr';
 
@@ -26,8 +26,12 @@ export default function ServerContextMenu({ serverName, serverId, isOwner }: Ser
             await mutate('/api/server');
             router.push('/channels/me');
             setDeleteModalOpened(false);
-        } catch (error: any) {
-            console.error('Failed to perform server action:', error);
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                console.error('Failed to perform server action:', error.response?.data?.error);
+            } else {
+                console.error('Failed to perform server action:', error);
+            }
         }
     };
 
