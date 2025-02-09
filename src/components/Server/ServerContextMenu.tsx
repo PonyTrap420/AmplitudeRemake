@@ -7,6 +7,8 @@ import InviteModal from "./InviteModal";
 import axios, { AxiosError } from 'axios';
 import { useRouter } from "next/navigation";
 import { useSWRConfig } from 'swr';
+import CreateChannelModal from './CreateChannelModal';
+import CreateCategoryModal from './CreateCategoryModal';
 
 type ServerContextMenuProps = {
     serverName: string;
@@ -17,6 +19,8 @@ type ServerContextMenuProps = {
 export default function ServerContextMenu({ serverName, serverId, isOwner }: ServerContextMenuProps) {
     const [inviteModalOpened, setInviteModalOpened] = useState(false);
     const [deleteModalOpened, setDeleteModalOpened] = useState(false);
+    const [createChannelOpened, setCreateChannelOpened] = useState(false);
+    const [createCategoryOpened, setCreateCategoryOpened] = useState(false);
     const router = useRouter();
     const { mutate } = useSWRConfig();
 
@@ -56,9 +60,11 @@ export default function ServerContextMenu({ serverName, serverId, isOwner }: Ser
 
                 <Menu.Dropdown>
                     <Menu.Item
-                        leftSection={<IconUserPlus size={16} />}
+                        fz='xs'
+                        rightSection={<IconUserPlus size={16} />}
                         color="blue"
                         onClick={() => setInviteModalOpened(true)}
+
                     >
                         Invite People
                     </Menu.Item>
@@ -66,38 +72,51 @@ export default function ServerContextMenu({ serverName, serverId, isOwner }: Ser
                     <Menu.Divider />
                     
                     <Menu.Item
-                        leftSection={<IconSettings size={16} />}
+                        fz='xs'
+                        rightSection={<IconSettings size={16} />}
                     >
                         Server Settings
+
                     </Menu.Item>
                     
                     <Menu.Item
-                        leftSection={<IconMessagePlus size={16} />}
+                        fz='xs'
+                        rightSection={<IconMessagePlus size={16} />}
+                        onClick={() => setCreateChannelOpened(true)}
                     >
+
                         Create Channel
                     </Menu.Item>
                     
                     <Menu.Item
-                        leftSection={<IconFolderPlus size={16} />}
+                        fz='xs'
+                        rightSection={<IconFolderPlus size={16} />}
+                        onClick={() => setCreateCategoryOpened(true)}
                     >
+
                         Create Category
+
                     </Menu.Item>
                     
                     <Menu.Divider />
                     
                     {isOwner ? (
                         <Menu.Item
+                            fz='xs'
                             color="red"
-                            leftSection={<IconTrash size={16} />}
+                            rightSection={<IconTrash size={16} />}
                             onClick={() => setDeleteModalOpened(true)}
                         >
+
                             Delete Server
                         </Menu.Item>
                     ) : (
                         <Menu.Item
+                            fz='xs'
                             color="red"
-                            leftSection={<IconLogout size={16} />}
+                            rightSection={<IconLogout size={16} />}
                             onClick={handleServerAction}
+
                         >
                             Leave Server
                         </Menu.Item>
@@ -132,6 +151,21 @@ export default function ServerContextMenu({ serverName, serverId, isOwner }: Ser
                     </Button>
                 </Stack>
             </Modal>
+
+            <CreateChannelModal
+                opened={createChannelOpened}
+                onClose={() => setCreateChannelOpened(false)}
+                serverId={serverId}
+                categoryId={null}
+                onChannelCreated={() => mutate(`/api/server/${serverId}`)}
+            />
+
+            <CreateCategoryModal
+                opened={createCategoryOpened}
+                onClose={() => setCreateCategoryOpened(false)}
+                serverId={serverId}
+                onCategoryCreated={() => mutate(`/api/server/${serverId}`)}
+            />
         </>
     );
 } 

@@ -27,8 +27,7 @@ export default function DirectMessage({user}:{user:User|undefined})
         <Avatar size={35}></Avatar>
         </Indicator>
         <Flex w="70%" direction='column'>
-
-            <Text>{user.displayName}</Text>
+            <Text style={{whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis'}}>{user.displayName}</Text>
         </Flex>
         <Space miw={0} w="30%"/>
         <ActionIcon onClick={handleRemoveChat} variant='transparent' mr={10} size={20} display={hovered?'block':'none'}>
