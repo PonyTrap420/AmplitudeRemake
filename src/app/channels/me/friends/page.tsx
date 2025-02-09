@@ -42,7 +42,20 @@ export default function Friends(){
       };
 
     const filteredFriends = data?.filter((friend: User) => {
-    return friendsType === FriendsType.ONLINE ? friend.status === "online" : true && friend.displayName?.toLowerCase()?.includes(searchValue.toLowerCase());
+        // For online friends
+        if (friendsType === FriendsType.ONLINE) {
+            return friend.status !== "offline";
+        }
+        
+        // For other types (with search)
+        if (searchValue) {
+            return (
+                friend.displayName?.toLowerCase().includes(searchValue.toLowerCase()) ||
+                friend.username.toLowerCase().includes(searchValue.toLowerCase())
+            );
+        }
+
+        return true;
     });
 
     const friendsList = filteredFriends?.map((friend: User, index: number) => {

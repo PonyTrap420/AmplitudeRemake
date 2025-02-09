@@ -7,6 +7,7 @@ import ServerContextMenu from "./ServerContextMenu";
 
 type ServerSidebarProps = {
     serverName: string;
+    serverId: string;
     channels: Channel[];
     selectedChannel: string | null;
     isOwner: boolean;
@@ -15,6 +16,7 @@ type ServerSidebarProps = {
 
 export default function ServerSidebar({ 
     serverName, 
+    serverId,
     channels, 
     selectedChannel, 
     isOwner,
@@ -22,7 +24,11 @@ export default function ServerSidebar({
 }: ServerSidebarProps) {
     return (
         <Box w={250} h="90%">
-            <ServerContextMenu serverName={serverName} isOwner={isOwner} />
+            <ServerContextMenu 
+                serverName={serverName} 
+                serverId={serverId}
+                isOwner={isOwner} 
+            />
             
             <ScrollArea h="calc(100% - 50px)" type="hover" scrollbarSize={8} 
                 styles={{
