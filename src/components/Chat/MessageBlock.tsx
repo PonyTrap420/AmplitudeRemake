@@ -13,14 +13,15 @@ export default function MessageBlock({message,isFirst,onContextMenu} : {message:
       }, []);
 
 
-    return (<Flex onContextMenu={onContextMenu} className="group rounded-lg hover:bg-[#323232]" mt={isFirst?15:0} mr={10} align='center' p={5} gap={15}>
-        {isFirst?<Avatar size={40} className="hover:cursor-pointer"/>:<Text fz='xs' className="opacity-0 group-hover:opacity-100" style={{textWrap:'nowrap'}} miw={40} maw={40}>{date?.toLocaleTimeString('en-US', {timeStyle:'short',hour12:true})}</Text>}
+    return (<Flex onContextMenu={onContextMenu} className="group rounded-lg hover:bg-[#323232]" mt={isFirst?15:0} mr={10} align='center' ml={-5} pl={6} p={2} gap={15}>
+        {isFirst?<Avatar size={40} className="hover:cursor-pointer"/>:<Text size="xs" className="opacity-0 group-hover:opacity-100" style={{textWrap:'nowrap'}} miw={40} maw={40}>{date?.toLocaleTimeString('en-US', {timeStyle:'short',hour12:true})}</Text>}
         <Flex w="70%" direction='column'>
-            {isFirst?<Flex gap={10}>
+            {isFirst?<Flex align='center' gap={10}>
                 <Text c='white' className="hover:underline hover:cursor-pointer">{message.author.displayName}</Text>
-                <Text>{date?.toLocaleString('en-US')}</Text>
+                <Text size='xs'>{date?.toLocaleString('en-US')}</Text>
             </Flex>:null}
             <Text className="select-text">{message.content}</Text>
         </Flex>
+
     </Flex>)
 }
