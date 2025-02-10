@@ -1,9 +1,11 @@
 import { $Enums } from "@prisma/client"
 
 export type User = {
-    id:string,
-    username: string,
-    displayName:string | null,
+    id: string;
+    username: string;
+    email: string;
+    phone?: number;
+    displayName?:string,
     avatar: string | null,
     banner:string | null,
     accent_color: string | null,
