@@ -7,9 +7,15 @@ export default function MyAccount()
         <Flex bg='dark.6' w={400} h={300}>
             
         </Flex>
-        <Title size='h3'>Password and Authentication</Title>
-        <Button w={170} variant='default'>Change Password</Button>
-        <Text size='xs'>ACCOUNT REMOVAL</Text>
-        <Button w={170} variant='outline' color='#F23D3D'>Delete Account</Button>
+        <Flex direction='column' gap={10}>
+            <Title size='h4'>Password and Authentication</Title>
+            <Button size="xs" w={170} variant='default'>Change Password</Button>
+        </Flex>
+
+        <Flex direction='column' gap={10}>
+            <Text c='grey' fw='bold' size='xs'>ACCOUNT REMOVAL</Text>
+            <Button size="xs" w={170} variant='outline' color='#F23D3D'>Delete Account</Button>
+        </Flex>
     </>
+
 }
