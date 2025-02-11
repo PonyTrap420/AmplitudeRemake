@@ -87,3 +87,35 @@ export async function DELETE(
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 } 
+
+export async function PATCH(
+    request: Request,
+    { params }: { params: { serverId: string } }
+) {
+    try {
+        const session = await verifySession();
+        if (!session) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        const { channelId, name } = await request.json();
+
+        const channel = await prisma.channel.update({
+            where: {
+                id: channelId,
+                serverId: params.serverId
+            },
+            data: {
+                name
+            }
+        });
+
+        return NextResponse.json(channel);
+    } catch (error) {
+        console.error('Failed to update channel:', error);
+        return NextResponse.json(
+            { error: "Failed to update channel" },
+            { status: 500 }
+        );
+    }
+}
