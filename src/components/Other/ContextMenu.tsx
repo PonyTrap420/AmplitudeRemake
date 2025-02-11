@@ -22,7 +22,7 @@ export default function ContextMenu({
 }) {
     return (
         <Flex 
-            style={{zIndex:10, border: '1px solid var(--mantine-color-dark-4)'}} 
+            style={{zIndex:12, border: '1px solid var(--mantine-color-dark-4)'}} 
             className="rounded-md" 
             pos='absolute' 
             p={5} 

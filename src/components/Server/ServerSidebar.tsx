@@ -11,6 +11,7 @@ import { useSWRConfig } from 'swr';
 import axios, { AxiosError } from "axios";
 import ContextMenu, { ContextMenuButton } from "../Other/ContextMenu";
 import useContextMenu from "@/hooks/useContextMenu";
+import EditItemModal from "./EditItemModal";
 
 type ServerSidebarProps = {
     serverName: string;
@@ -33,6 +34,7 @@ export default function ServerSidebar({
 }: ServerSidebarProps) {
     const { mutate } = useSWRConfig();
     const [createChannelOpened, setCreateChannelOpened] = useState(false);
+    const [editModal, setEditModal] = useState({opened: false,itemId: '',itemName: '',type: '' as 'channel' | 'category'});
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const uncategorizedChannels = channels.filter(channel => !channel.categoryId);
     const { clicked, setClicked, location, setLocation } = useContextMenu();
@@ -197,6 +199,15 @@ export default function ServerSidebar({
                 onChannelCreated={() => mutate(`/api/server/${serverId}`)}
             />
 
+            <EditItemModal
+                opened={editModal.opened}
+                onClose={() => setEditModal({ opened: false, itemId: '', itemName: '', type: 'channel' })}
+                serverId={serverId}
+                itemId={editModal.itemId}
+                initialName={editModal.itemName}
+                type={editModal.type}
+            />
+            
             {clicked && selectedItem && (
                 <ContextMenu location={location}>
                     {selectedItem.type === 'channel' ? (
@@ -206,7 +217,23 @@ export default function ServerSidebar({
                             <ContextMenuButton text="Invite People" rightSection={<IconUserPlus size={16}/>} color="blue"/>
                             <Divider orientation='horizontal'/>
 
-                            <ContextMenuButton text="Edit Channel" rightSection={<IconPencil size={16}/>}/>
+                            <ContextMenuButton 
+                                text="Edit Channel" 
+                                rightSection={<IconPencil size={16}/>}
+                                onClick={() => {
+                                    const channel = channels.find(c => c.id === selectedItem.id) || 
+                                                categories.flatMap(cat => cat.channels).find(c => c.id === selectedItem.id);
+                                    if (channel) {
+                                        setEditModal({
+                                            opened: true,
+                                            itemId: channel.id,
+                                            itemName: channel.name,
+                                            type: 'channel'
+                                        });
+                                    }
+                                    setClicked(false);
+                                }}
+                            />
                             <ContextMenuButton text="Duplicate Channel" rightSection={<IconCopy size={16}/>}/>
 
 
@@ -233,7 +260,22 @@ export default function ServerSidebar({
                         <>
                             <ContextMenuButton text="Mark As Read" rightSection={<IconCheck size={16}/>}/>
                             <Divider orientation='horizontal'/>
-                            <ContextMenuButton text="Edit Category" rightSection={<IconPencil size={16}/>}/>
+                            <ContextMenuButton 
+                                text="Edit Category" 
+                                rightSection={<IconPencil size={16}/>}
+                                onClick={() => {
+                                    const category = categories.find(c => c.id === selectedItem.id);
+                                    if (category) {
+                                        setEditModal({
+                                            opened: true,
+                                            itemId: category.id,
+                                            itemName: category.name,
+                                            type: 'category'
+                                        });
+                                    }
+                                    setClicked(false);
+                                }}
+                            />
                             <ContextMenuButton 
 
 
