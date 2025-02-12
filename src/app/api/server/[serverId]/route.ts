@@ -15,7 +15,17 @@ export async function GET(
         const server = await prisma.server.findUnique({
             where: { id: params.serverId },
             include: {
-                channels: true
+                channels: {
+                    orderBy: { position: 'asc' }
+                },
+                categories: {
+                    include: {
+                        channels: {
+                            orderBy: { position: 'asc' }
+                        }
+                    },
+                    orderBy: { position: 'asc' }
+                }
             }
         });
 
@@ -31,7 +41,6 @@ export async function GET(
             });
         }
 
-        // Return full server info with channels for members
         return NextResponse.json(server);
     } catch (error) {
         console.error('Error fetching server:', error);

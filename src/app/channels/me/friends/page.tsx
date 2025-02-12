@@ -63,29 +63,31 @@ export default function Friends(){
       });
 
     return <Flex direction='column' bg='#0c0c0c' h="100%" w="100%" >
-    <Flex pr={0} mah={60} style={{borderBottom:'2px solid var(--mantine-color-dark-7)'}} gap={20} p={10} w="100%" align='center' justify='start'>
+    <Flex pr={0} mah={45} style={{borderBottom:'2px solid var(--mantine-color-dark-7)'}} gap={20} p={10} w="100%" align='center' justify='start'>
         <Flex align='center' ml={10} gap={10}>
-            <IconFriends size={25}/>
-            <Text size='md' fw="bold">Friends</Text>
+            <IconFriends size={20}/>
+            <Text size='sm' fw="bold">Friends</Text>
         </Flex>
         <Divider color="dark.3"  size={2} orientation='vertical'/>
         <Flex gap={5}>
-            <Button bg={friendsType==FriendsType.ONLINE?'dark.4':''} c={'white'} variant='subtle' onClick={()=>setFriendsType(FriendsType.ONLINE)} size='sm'>Online</Button>
-            <Button bg={friendsType==FriendsType.ALL?'dark.4':''} variant='subtle' onClick={()=>setFriendsType(FriendsType.ALL)} size='sm'>All</Button>
-            <Button bg={friendsType==FriendsType.PENDING?'dark.4':''} variant='subtle' onClick={()=>setFriendsType(FriendsType.PENDING)} size='sm'>Pending</Button>
-            <Button bg={friendsType==FriendsType.BLOCKED?'dark.4':''}variant='subtle'  onClick={()=>setFriendsType(FriendsType.BLOCKED)} size='sm'>Blocked</Button>
+            <Button bg={friendsType==FriendsType.ONLINE?'dark.4':''} c={'white'} variant='subtle' onClick={()=>setFriendsType(FriendsType.ONLINE)} size='xs'>Online</Button>
+            <Button bg={friendsType==FriendsType.ALL?'dark.4':''} variant='subtle' onClick={()=>setFriendsType(FriendsType.ALL)} size='xs'>All</Button>
+            <Button bg={friendsType==FriendsType.PENDING?'dark.4':''} variant='subtle' onClick={()=>setFriendsType(FriendsType.PENDING)} size='xs'>Pending</Button>
+            <Button bg={friendsType==FriendsType.BLOCKED?'dark.4':''}variant='subtle'  onClick={()=>setFriendsType(FriendsType.BLOCKED)} size='xs'>Blocked</Button>
         </Flex>
-        <Button onClick={()=>setFriendsType(FriendsType.ADD)} miw={'fit-content'} size='sm' variant='light' c='green'>Add Friend</Button>
+        <Button onClick={()=>setFriendsType(FriendsType.ADD)} miw={'fit-content'} size='xs' variant='light' c='green'>Add Friend</Button>
         <Space miw={0} w="100%"/>
-        <Flex pr={5} justify='center' h={"100%"} align='center' p={10}>
+        <Flex pr={5} justify='end' h={"100%"} align='center' p={0}>
             <CreateDM>
-                <ActionIcon h={40} w={40} variant='transparent'><IconMessagePlus size={25}/></ActionIcon>
+                <ActionIcon h={40} w={40} variant='transparent'><IconMessagePlus size={20}/></ActionIcon>
             </CreateDM>
-            <Divider mr={5} ml={5} size={2} color="dark.3" orientation='vertical'/>
-            <ActionIcon h={40} w={40}  variant='transparent'><IconInbox size={25}/></ActionIcon>
-            <ActionIcon h={40} w={40}  variant='transparent'><IconHelpCircleFilled size={25}/></ActionIcon>
+            <Divider mr={0} ml={0} size={2} color="dark.3" orientation='vertical'/>
+            <ActionIcon h={20} w={20}  variant='transparent'><IconInbox size={20}/></ActionIcon>
+            <ActionIcon h={20} w={20}  variant='transparent'><IconHelpCircleFilled size={20}/></ActionIcon>
         </Flex>
     </Flex>
+
+
     <Flex w="100%" h="100%">
         <Flex pt={20} p={30} w="100%" direction='column'>
             

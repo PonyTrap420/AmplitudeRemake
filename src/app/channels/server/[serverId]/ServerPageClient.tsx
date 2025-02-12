@@ -1,6 +1,6 @@
 'use client'
 
-import { Flex, Text } from "@mantine/core";
+import { Flex, Space, Text } from "@mantine/core";
 import { useServer } from '@/hooks/useServer';
 import { useChannelMessages } from "@/hooks/useChannelMessages";
 import { useState } from "react";
@@ -44,6 +44,7 @@ export default function ServerPageClient({ params, currentUser }: ServerPageProp
                     serverName={server.name}
                     serverId={server.id}
                     channels={server.channels}
+                    categories={server.categories}
                     selectedChannel={selectedChannel}
                     isOwner={isOwner}
                     onChannelSelect={setSelectedChannel}
@@ -63,6 +64,7 @@ export default function ServerPageClient({ params, currentUser }: ServerPageProp
                         ) : (
                             <>
                                 <ChatContent messages={messages || []} />
+                                <Space mih={70}></Space>
                                 <ChatInput user={currentUser} channelId={selectedChannel} />
                             </>
                         )}

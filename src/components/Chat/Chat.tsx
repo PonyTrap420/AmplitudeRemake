@@ -5,7 +5,7 @@ import MessageBlock from "@/components/Chat/MessageBlock";
 import { Divider, Flex, ScrollArea, Text } from "@mantine/core";
 import ContextMenu, { ContextMenuButton } from "../Other/ContextMenu";
 import useContextMenu from "@/hooks/useContextMenu";
-import { IconCopy, IconCornerUpLeft, IconCornerUpRight, IconPencil, IconPinFilled } from "@tabler/icons-react";
+import { IconCopy, IconCornerUpLeft, IconCornerUpRight, IconPencil, IconPinFilled, IconTrash } from "@tabler/icons-react";
 import { useEffect, useRef } from "react";
 
 export default function Chat({ messages = [] }: { messages?: Message[] }) {
@@ -53,15 +53,15 @@ export default function Chat({ messages = [] }: { messages?: Message[] }) {
     </ScrollArea>
     {clicked?
     <ContextMenu location={location}>
-      <ContextMenuButton text="Edit Message" rightSection={<IconPencil/>}/>
-      <ContextMenuButton text="Reply" rightSection={<IconCornerUpLeft/>}/>
-      <ContextMenuButton text="Forward" rightSection={<IconCornerUpRight/>}/>
+      <ContextMenuButton text="Edit Message" rightSection={<IconPencil size={16}/>}/>
+      <ContextMenuButton text="Reply" rightSection={<IconCornerUpLeft size={16}/>}/>
+      <ContextMenuButton text="Forward" rightSection={<IconCornerUpRight size={16}/>}/>
       <Divider orientation='horizontal'/>
-      <ContextMenuButton text="Copy Text" rightSection={<IconCopy/>}/>
-      <ContextMenuButton text="Pin Message" rightSection={<IconPinFilled/>}/>
-      <Divider orientation='horizontal'/>
-      <ContextMenuButton color={'red'} text="Delete Message" rightSection={<IconPinFilled/>}/>
 
+      <ContextMenuButton text="Copy Text" rightSection={<IconCopy size={16}/>}/>
+      <ContextMenuButton text="Pin Message" rightSection={<IconPinFilled size={16}/>}/>
+      <Divider orientation='horizontal'/>
+      <ContextMenuButton color={'red'} text="Delete Message" rightSection={<IconTrash size={16}/>}/>
     </ContextMenu>:null
     }
   </>

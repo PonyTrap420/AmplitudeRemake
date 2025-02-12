@@ -9,5 +9,5 @@ import path from "path";
 export default function NavButton({value, children}:{value:string, children:ReactNode})
 {
     const pathname = path.basename(usePathname());
-    return <Link href={value}><Button w={170} justify='start' variant={pathname==value?'default':'subtle'}>{children}</Button></Link>
+    return <Link href={value}><Button w={170} size="xs" justify='start' variant={pathname==value?'default':'subtle'}>{children}</Button></Link>
 }

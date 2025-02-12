@@ -21,8 +21,8 @@ export default async function HomeLayout({
         <Card bg='dark.8' w='100%' h="100%" p={0}>
             <Flex  w="100%" h="100%">
                 <Flex pos='relative' miw={250} maw={250} h="100%" w="20%" align='center' direction='column'>
-                    <Container mih={60} style={{borderBottom:'2px solid var(--mantine-color-dark-7)'}} w="100%">
-                    <TextInput size='xs' styles={{input:{backgroundColor:'var(--mantine-color-dark-9)', border:0}}} mt={13} placeholder="Find or start a conversation"/>
+                    <Container mih={45} style={{borderBottom:'2px solid var(--mantine-color-dark-7)'}} w="100%">
+                    <TextInput size='xs' styles={{input:{backgroundColor:'var(--mantine-color-dark-9)', border:0}}} mt={7} placeholder="Find or start a conversation"/>
                     </Container>
 
                     <ScrollArea w="100%" p={10} pb={0}>
