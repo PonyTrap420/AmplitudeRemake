@@ -22,14 +22,21 @@ model Server {
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
+  categories Category[]
+
   @@map("servers")
 }
 
 model Channel {
   id         String     @id @default(auto()) @map("_id") @db.ObjectId
   name       String
+  type       String     @default("text") // "text" or "voice"
+  isPrivate  Boolean    @default(false)
   serverId   String     @db.ObjectId
   server     Server     @relation(fields: [serverId], references: [id])
+  categoryId String?   @db.ObjectId
+  category   Category? @relation(fields: [categoryId], references: [id])
+  position   Int       @default(0)
   messages   Message[]
   createdAt  DateTime   @default(now())
 
@@ -61,6 +68,7 @@ model User {
   id           String    @id @default(auto()) @map("_id") @db.ObjectId
   email        String    @unique
   username     String    @unique
+  phone        Int?
   displayName  String?
   status       UserStatus @default(offline)
   password     String
@@ -146,4 +154,15 @@ model Invite {
     maxUses   Int      @default(100)
 
     @@map("invites")
+}
+
+model Category {
+    id        String    @id @default(auto()) @map("_id") @db.ObjectId
+    name      String
+    serverId  String    @db.ObjectId
+    server    Server    @relation(fields: [serverId], references: [id])
+    channels  Channel[]
+    position  Int       @default(0)
+
+    @@map("categories")
 }
