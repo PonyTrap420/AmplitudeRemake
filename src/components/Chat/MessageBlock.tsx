@@ -28,7 +28,7 @@ export default function MessageBlock({message,isFirst,onContextMenu} : {message:
             {message.attachments&&
                 <>
                 {message.attachments.length>1?
-                <Button rightSection={<IconEye/>}>View Attachments</Button>:
+                <Button variant='light' w={200} rightSection={<IconEye/>}>View Attachments</Button>:
                 <Image maw={400} src={message.attachments}></Image>
                 }
                 </>

@@ -20,6 +20,11 @@ type ChatInputProps = {
     user?: User;
 }
 
+export type AttachmentType = {
+    id: string;
+    file: FileWithPath;
+}
+
 export default function ChatInput({ channelId, user, otherUser }: ChatInputProps)
 {
     const { mutate } = useSWRConfig()
@@ -29,18 +34,26 @@ export default function ChatInput({ channelId, user, otherUser }: ChatInputProps
     const [textValue, setTextValue] = useState("");
     const params = useParams<{ id: string; }>()
 
-    const [attachments, setAttachments] = useState<FileWithPath[]>([]);
+    const [attachments, setAttachments] = useState<AttachmentType[]>([]);
     const [isUploading, setIsUploading] = useState(false);
 
     const handleDrop = (newFiles: FileWithPath[]) => {
-        setAttachments((prevFiles) => [...prevFiles, ...newFiles]);
-      };
-    
-    const uploadFiles = async (files: FileWithPath[]) => {
+        const filesWithId = newFiles.map((file) => ({
+          id: crypto.randomUUID(),
+          file,
+        }));
+        setAttachments((prevFiles) => [...prevFiles, ...filesWithId]);
+    };
+
+    const removeAttachment = (id: string) => {
+        setAttachments((prevFiles) => prevFiles.filter((attachment) => attachment.id !== id));
+    };
+
+    const uploadFiles = async (files: AttachmentType[]) => {
         const formData = new FormData();
         
         files.forEach((file) => {
-            formData.append('files', file);
+            formData.append('files', file.file);
         });
 
         try {
@@ -125,7 +138,7 @@ export default function ChatInput({ channelId, user, otherUser }: ChatInputProps
             <ScrollArea scrollbars={'x'} h={200} w={"100%"} p={10} className="rounded" bg={'var(--mantine-color-dark-4)'}>
                     <Flex gap={15}>
                     {attachments.map((attachment,index) => (
-                        <Attachment key={index} name={attachment.name} url={URL.createObjectURL(attachment)} />
+                        <Attachment key={index} attachment={attachment} handleRemove={removeAttachment} />
                     ))}
                     </Flex>
             </ScrollArea>:null}
