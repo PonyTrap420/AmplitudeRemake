@@ -2,12 +2,14 @@ import { useState } from "react";
 import { Box, Flex, Text, Modal, ActionIcon, Tooltip } from "@mantine/core";
 import { Image } from "@mantine/core";
 import { IconPencil, IconTrash } from "@tabler/icons-react";
+import { AttachmentType } from "./ChatInput";
 
-export default function Attachment({ name, url }: { name: string; url: string }) {
+export default function Attachment({ attachment, handleRemove }: { attachment: AttachmentType, handleRemove:(id:string)=>void }) {
   const [opened, setOpened] = useState(false); // State to control modal visibility
 
   const handleOpenModal = () => setOpened(true); // Function to open the modal
   const handleCloseModal = () => setOpened(false); // Function to close the modal
+  const url = URL.createObjectURL(attachment.file);
 
   return (
     <Flex pos='relative' p={10} direction="column" bg="dark.6" w={170} align="center">
@@ -16,7 +18,7 @@ export default function Attachment({ name, url }: { name: string; url: string })
           <ActionIcon size={'sm'} variant='subtle'><IconPencil size={15}/></ActionIcon>
         </Tooltip>
         <Tooltip label="Remove Attachment">
-          <ActionIcon size={'sm'} variant='subtle' c={'red'}><IconTrash size={15}/></ActionIcon>
+          <ActionIcon onClick={()=>{handleRemove(attachment.id)}} size={'sm'} variant='subtle' c={'red'}><IconTrash size={15}/></ActionIcon>
           </Tooltip>
       </Flex>
       <Box
@@ -30,7 +32,7 @@ export default function Attachment({ name, url }: { name: string; url: string })
         }}
         onClick={handleOpenModal} // Open the modal when image is clicked
       >
-        <Image src={url} alt={name} />
+        <Image src={url} alt={attachment.file.name} />
       </Box>
       <Box p={0} w={"100%"}>
         <Text
@@ -38,7 +40,7 @@ export default function Attachment({ name, url }: { name: string; url: string })
           style={{ whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden" }}
           fz="xs"
         >
-          {name}
+          {attachment.file.name}
         </Text>
       </Box>
 
@@ -65,7 +67,7 @@ export default function Attachment({ name, url }: { name: string; url: string })
           >
             <Image
               src={url}
-              alt={name}
+              alt={attachment.file.name}
               style={{ maxWidth: "100%", maxHeight: "100%" }}
             />
           </Box>
