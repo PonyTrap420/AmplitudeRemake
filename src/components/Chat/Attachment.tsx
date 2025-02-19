@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Box, Flex, Text, Modal } from "@mantine/core";
+import { Box, Flex, Text, Modal, ActionIcon, Tooltip } from "@mantine/core";
 import { Image } from "@mantine/core";
+import { IconPencil, IconTrash } from "@tabler/icons-react";
 
 export default function Attachment({ name, url }: { name: string; url: string }) {
   const [opened, setOpened] = useState(false); // State to control modal visibility
@@ -9,7 +10,15 @@ export default function Attachment({ name, url }: { name: string; url: string })
   const handleCloseModal = () => setOpened(false); // Function to close the modal
 
   return (
-    <Flex p={10} direction="column" bg="dark.6" w={170} align="center">
+    <Flex pos='relative' p={10} direction="column" bg="dark.6" w={170} align="center">
+      <Flex bg='dark.8' className="rounded hover:shadow-lg" top={0} right={-10} pos='absolute' style={{zIndex:2}}>
+        <Tooltip label="Modify Attachment">
+          <ActionIcon size={'sm'} variant='subtle'><IconPencil size={15}/></ActionIcon>
+        </Tooltip>
+        <Tooltip label="Remove Attachment">
+          <ActionIcon size={'sm'} variant='subtle' c={'red'}><IconTrash size={15}/></ActionIcon>
+          </Tooltip>
+      </Flex>
       <Box
         w={"100%"}
         h={135}

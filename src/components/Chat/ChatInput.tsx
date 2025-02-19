@@ -21,7 +21,6 @@ type ChatInputProps = {
 }
 
 export default function ChatInput({ channelId, user, otherUser }: ChatInputProps)
-
 {
     const { mutate } = useSWRConfig()
     const [pickerOpened, setPickerOpened] = useState(false);
@@ -31,10 +30,31 @@ export default function ChatInput({ channelId, user, otherUser }: ChatInputProps
     const params = useParams<{ id: string; }>()
 
     const [attachments, setAttachments] = useState<FileWithPath[]>([]);
+    const [isUploading, setIsUploading] = useState(false);
 
     const handleDrop = (newFiles: FileWithPath[]) => {
         setAttachments((prevFiles) => [...prevFiles, ...newFiles]);
       };
+    
+    const uploadFiles = async (files: FileWithPath[]) => {
+        const formData = new FormData();
+        
+        files.forEach((file) => {
+            formData.append('files', file);
+        });
+
+        try {
+        const response = await axios.post('/api/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+            });
+            return response.data.fileUrls;
+        } catch (error) {
+            console.error('Error uploading files:', error);
+            throw error;
+        }
+    };
 
     const placeholder = channelId 
         ? "Message #" + channelId 
@@ -43,8 +63,15 @@ export default function ChatInput({ channelId, user, otherUser }: ChatInputProps
             : "Message";
 
     const handleKeyPress = async (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Enter' && textValue.trim() !== '') {
+        if (event.key === 'Enter' && (textValue.trim() !== ''|| attachments.length > 0)) {
+            setIsUploading(true);
             const endpoint = channelId ? `/api/channels/${channelId}/messages` : `/api/chat/${params.id}`;
+
+        try {
+            let uploadedFileUrls: string[] = [];
+            if (attachments.length > 0) {
+                uploadedFileUrls = await uploadFiles(attachments);
+            }
 
             const newMessage: Partial<Message> = {
                 id: Number(Date.now().toString()),
@@ -68,23 +95,26 @@ export default function ChatInput({ channelId, user, otherUser }: ChatInputProps
                 timestamp: new Date(),
             };
             
+            await axios.post(endpoint, { content: textValue, attachments: uploadedFileUrls });
 
-            try {
-                await axios.post(endpoint, { content: textValue });
-                if (channelId) {
-                    await mutate(`/api/channels/${channelId}/messages`, 
-                        (prevData: Partial<Message>[] = []) => [...prevData, newMessage]
-                    );
-                } else {
-                    await mutate([`/api/chat/`, params.id], 
-                        (prevData: { messages: Partial<Message>[] } = { messages: [] }) => ({
-                            messages: [...prevData.messages, newMessage]
-                        })
-                    );
-                }
-                setTextValue('');
+            if (channelId) {
+                await mutate(`/api/channels/${channelId}/messages`, 
+                    (prevData: Partial<Message>[] = []) => [...prevData, newMessage]
+                );
+            } else {
+                await mutate([`/api/chat/`, params.id], 
+                    (prevData: { messages: Partial<Message>[] } = { messages: [] }) => ({
+                        messages: [...prevData.messages, newMessage]
+                    })
+                );
+            }
+            setTextValue('');
+            setAttachments([]);
+
             } catch (error) {
                 console.error('Error sending message', error);
+            } finally {
+                setIsUploading(false);
             }
         }
     };
@@ -93,13 +123,13 @@ export default function ChatInput({ channelId, user, otherUser }: ChatInputProps
       <Flex gap={5} direction={'column'} p={20} pt={0} align='start' pos='absolute' bottom={0} mih={attachments.length!=0?275:70} h={attachments.length!=0?275:70} w="100%"> 
             {attachments.length!=0?
             <ScrollArea scrollbars={'x'} h={200} w={"100%"} p={10} className="rounded" bg={'var(--mantine-color-dark-4)'}>
-                    <Flex gap={10}>
+                    <Flex gap={15}>
                     {attachments.map((attachment,index) => (
                         <Attachment key={index} name={attachment.name} url={URL.createObjectURL(attachment)} />
                     ))}
                     </Flex>
             </ScrollArea>:null}
-            <TextInput onKeyDown={handleKeyPress} onChange={(event) => setTextValue(event.currentTarget.value)} value={textValue} styles={{input:{backgroundColor:'var(--mantine-color-dark-4)'}}} size='md' w="100%" leftSection={
+            <TextInput disabled={isUploading} onKeyDown={handleKeyPress} onChange={(event) => setTextValue(event.currentTarget.value)} value={textValue} styles={{input:{backgroundColor:'var(--mantine-color-dark-4)'}}} size='md' w="100%" leftSection={
                 <Attachments onDrop={handleDrop}/>
             } placeholder={placeholder}/>
             <Flex right={25} bottom={29} bg={'dark.4'} pos='absolute' miw={80}>
