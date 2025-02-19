@@ -49,10 +49,12 @@ export async function POST(
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { content } = await request.json();
-        if (!content || typeof content !== 'string') {
-            return NextResponse.json({ error: 'Invalid content' }, { status: 400 });
+        const { content, attachments } = await request.json();
+
+        if ((!content || typeof content !== 'string') && (!attachments || attachments.length === 0)) {
+            return NextResponse.json({ error: 'Invalid content or attachments required' }, { status: 400 });
         }
+        
 
         const message = await prisma.message.create({
             data: {
@@ -62,7 +64,7 @@ export async function POST(
                 pinned: false,
                 mentionEveryone: false,
                 mentions: [],
-                attachments: [],
+                attachments: attachments,
                 embeds: { create: [] }
             },
             include: {
