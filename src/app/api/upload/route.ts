@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { writeFile } from "fs/promises";
 import path from "path";
 import { randomUUID } from "crypto";
+import { put } from '@vercel/blob';
 
-// Directory where files will be saved
+// Directory where files will be saved locally if Blob Storage is not configured
 const uploadDir = path.join(process.cwd(), "public/uploads");
 
 // Ensure uploaded file is an image
@@ -34,11 +35,21 @@ export async function POST(req: NextRequest) {
 
             const fileExtension = path.extname(file.name);
             const uniqueFilename = `${randomUUID()}${fileExtension}`;
-            const filePath = path.join(uploadDir, uniqueFilename);
-            const fileBuffer = Buffer.from(await file.arrayBuffer());
 
-            await writeFile(filePath, fileBuffer);
-            fileUrls.push(`/uploads/${uniqueFilename}`);
+            if (process.env.BLOB_READ_WRITE_TOKEN) {
+                // Use Vercel Blob Storage
+                const blob = await put(uniqueFilename, file, {
+                    access: 'public',
+                    addRandomSuffix: false // We're already using UUID
+                });
+                fileUrls.push(blob.url);
+            } else {
+                // Fallback to local storage
+                const filePath = path.join(uploadDir, uniqueFilename);
+                const fileBuffer = Buffer.from(await file.arrayBuffer());
+                await writeFile(filePath, fileBuffer);
+                fileUrls.push(`/uploads/${uniqueFilename}`);
+            }
         }
 
         return NextResponse.json({
