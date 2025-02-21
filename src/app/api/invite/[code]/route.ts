@@ -3,11 +3,12 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(
     request: Request,
-    { params }: { params: { code: string } }
+    { params }: { params: Promise<{ code: string }> }
 ) {
+    const { code } = await params;
     try {
         const invite = await prisma.invite.findUnique({
-            where: { code: params.code }
+            where: { code: code }
         });
 
         if (!invite) {

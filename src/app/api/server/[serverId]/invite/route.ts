@@ -5,8 +5,9 @@ import { nanoid } from 'nanoid';
 
 export async function GET(
     request: Request,
-    { params }: { params: { serverId: string } }
+    { params }: { params: Promise<{ serverId: string }> }
 ) {
+    const { serverId } = await params;
     try {
         const session = await verifySession();
         if (!session) {
@@ -16,7 +17,7 @@ export async function GET(
         // Find existing non-expired invite or create new one
         let invite = await prisma.invite.findFirst({
             where: {
-                serverId: params.serverId,
+                serverId: serverId,
                 expiresAt: { gt: new Date() },
                 uses: { lt: 100 }
             }
@@ -26,7 +27,7 @@ export async function GET(
             invite = await prisma.invite.create({
                 data: {
                     code: nanoid(8),
-                    serverId: params.serverId,
+                    serverId: serverId,
                     expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
                 }
             });
@@ -41,8 +42,9 @@ export async function GET(
 
 export async function POST(
     request: Request,
-    { params }: { params: { serverId: string } }
+    { params }: { params: Promise<{ serverId: string }> }
 ) {
+    const { serverId } = await params;
     try {
         const session = await verifySession();
         if (!session) {
@@ -50,7 +52,7 @@ export async function POST(
         }
 
         const server = await prisma.server.findUnique({
-            where: { id: params.serverId },
+            where: { id: serverId },
             include: { members: true }
         });
 
@@ -64,7 +66,7 @@ export async function POST(
 
         // Add user to server
         await prisma.server.update({
-            where: { id: params.serverId },
+            where: { id: serverId },
             data: {
                 membersIDs: {
                     push: session.userId

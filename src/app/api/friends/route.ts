@@ -5,11 +5,10 @@ import { verifySession } from '@/lib/dal';
 
 export async function POST(request: Request) {
   try {
-
-    const session = await verifySession()
- 
-    if (!session)
+    const session = await verifySession();
+    if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     const { username } = await request.json();
     const currentUserId = session.userId;
@@ -60,17 +59,16 @@ export async function POST(request: Request) {
     return NextResponse.json(friendship, { status: 201 });
   } catch (error) {
     console.error('Error adding friend:', error);
-    return NextResponse.json({ error: 'Error adding friend' }, { status: 500 });
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
-  
+
 export async function PATCH(request: Request) {
   try {
-
-    const session = await verifySession()
-
-    if (!session)
+    const session = await verifySession();
+    if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     const { action, userId } = await request.json();
     const currentUserId = session.userId;
@@ -94,7 +92,7 @@ export async function PATCH(request: Request) {
       case 'accept':
         updatedRelationship = await prisma.relationship.update({
           where: { id: existingRelationship.id },
-          data: { status: 'confirmed' }, // Assuming 'confirmed' is the status for an accepted relationship
+          data: { status: 'confirmed' },
         });
         break;
 
@@ -109,11 +107,13 @@ export async function PATCH(request: Request) {
           where: { id: existingRelationship.id },
         });
         break;
+
       case 'delete':
         updatedRelationship = await prisma.relationship.delete({
           where: { id: existingRelationship.id },
         });
-      break;
+        break;
+
       default:
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
     }
@@ -126,22 +126,20 @@ export async function PATCH(request: Request) {
   }
 }
 
-  
 export async function GET(request: Request) {
-   
-  const session = await verifySession()
- 
-  if (!session)
-  return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const session = await verifySession();
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
 
   const userId = session.userId;
 
   const { searchParams } = new URL(request.url);
   let status: RelationshipStatus = "confirmed";
-  if (searchParams.get('status') === 'blocked')
+  if (searchParams.get('status') === 'blocked') {
     status = RelationshipStatus.blocked_to;
-  else if (searchParams.get('status') && Object.values(RelationshipStatus).includes(searchParams.get('status') as RelationshipStatus)) {
-      status = searchParams.get('status') as RelationshipStatus;
+  } else if (searchParams.get('status') && Object.values(RelationshipStatus).includes(searchParams.get('status') as RelationshipStatus)) {
+    status = searchParams.get('status') as RelationshipStatus;
   }
 
   const relationships = await prisma.relationship.findMany({
@@ -158,7 +156,7 @@ export async function GET(request: Request) {
       ],
     },
     include: {
-      fromUser: true, 
+      fromUser: true,
       toUser: true,
     },
   });
@@ -167,8 +165,8 @@ export async function GET(request: Request) {
     userId: relationship.fromUserId === userId ? relationship.toUserId : relationship.fromUserId,
     isSender: !(relationship.fromUserId === userId)
   }));
-  
-  const userIds = userMap.map(user=>user.userId);
+
+  const userIds = userMap.map(user => user.userId);
 
   const users = await prisma.user.findMany({
     where: {
@@ -176,15 +174,15 @@ export async function GET(request: Request) {
         in: userIds,
       },
     },
-    select:{
-        id:true,
-        username:true,
-        displayName:true,
-        avatar:true,
-        banner:true,
-        accent_color:true,
-        banner_color:true,
-        status:true
+    select: {
+      id: true,
+      username: true,
+      displayName: true,
+      avatar: true,
+      banner: true,
+      accent_color: true,
+      banner_color: true,
+      status: true
     }
   });
 
@@ -195,7 +193,6 @@ export async function GET(request: Request) {
       isSender: relationshipInfo ? relationshipInfo.isSender : false,
     };
   });
-
 
   return NextResponse.json(usersWithSenderInfo);
 }

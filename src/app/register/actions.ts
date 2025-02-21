@@ -18,7 +18,7 @@ const registerUserSchema = z.object({
   export async function registerUser(userData: { email: string; username: string; password: string; dateOfBirth: Date; displayName?: string }) {
     try {
       
-      const ip = headers().get("x-forwarded-for") ?? "unknown";
+      const ip = (await headers()).get("x-forwarded-for") ?? "unknown";
       const isRateLimited = rateLimit(ip);
       
       if (!isRateLimited) {

@@ -4,8 +4,9 @@ import { verifySession } from '@/lib/dal';
 
 export async function POST(
     request: Request,
-    { params }: { params: { serverId: string } }
+    { params }: { params: Promise<{ serverId: string }> }
 ) {
+    const { serverId } = await params;
     try {
         const session = await verifySession();
         if (!session) {
@@ -13,7 +14,7 @@ export async function POST(
         }
 
         const server = await prisma.server.findUnique({
-            where: { id: params.serverId }
+            where: { id: serverId }
         });
 
         if (!server) {
@@ -36,7 +37,7 @@ export async function POST(
                 name,
                 type: type || 'text',
                 isPrivate: isPrivate || false,
-                serverId: params.serverId,
+                serverId: serverId,
                 categoryId: categoryId || null
             }
         });
@@ -50,8 +51,9 @@ export async function POST(
 
 export async function DELETE(
     request: Request,
-    { params }: { params: { serverId: string } }
+    { params }: { params: Promise<{ serverId: string }> }
 ) {
+    const { serverId } = await params;
     try {
         const session = await verifySession();
         if (!session) {
@@ -61,7 +63,7 @@ export async function DELETE(
         const { channelId } = await request.json();
 
         const server = await prisma.server.findUnique({
-            where: { id: params.serverId }
+            where: { id: serverId }
         });
 
         if (!server) {
@@ -90,8 +92,9 @@ export async function DELETE(
 
 export async function PATCH(
     request: Request,
-    { params }: { params: { serverId: string } }
+    { params }: { params: Promise<{ serverId: string }> }
 ) {
+    const { serverId } = await params;
     try {
         const session = await verifySession();
         if (!session) {
@@ -103,7 +106,7 @@ export async function PATCH(
         const channel = await prisma.channel.update({
             where: {
                 id: channelId,
-                serverId: params.serverId
+                serverId: serverId
             },
             data: {
                 name

@@ -1,6 +1,6 @@
 'use client'
 
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios, { AxiosError } from "axios";
 import { Flex, Text, Loader, Modal, Button, Image, Stack } from "@mantine/core";
@@ -11,7 +11,9 @@ type ServerInfo = {
     imageUrl: string | null;
 };
 
-export default function InvitePage({ params }: { params: { code: string } }) {
+export default function InvitePage() {
+    const params = useParams<{ code: string }>()
+
     const router = useRouter();
     const [error, setError] = useState<string | null>(null);
     const [serverInfo, setServerInfo] = useState<ServerInfo | null>(null);
