@@ -10,7 +10,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const id = (await params).id;
-    const { content } = await request.json();
+    const { content, attachments } = await request.json();
+
+    if ((!content || typeof content !== 'string') && (!attachments || attachments.length === 0)) {
+        return NextResponse.json({ error: 'Invalid content or attachments required' }, { status: 400 });
+    }
+    
     const currentUserId = session.userId;
 
     const message = await prisma.message.create({
@@ -21,7 +26,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         directMessage: true,
         timestamp: new Date(),
         mentionEveryone:false,
-        pinned:false
+        pinned:false,
+        attachments: attachments
       },
     });
 
