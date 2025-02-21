@@ -2,10 +2,8 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifySession } from '@/lib/dal';
 
-export async function GET(
-    request: Request,
-    { params }: { params: { serverId: string } }
-) {
+export async function GET(request: Request, { params }: { params: Promise<{ serverId: string }> }) {
+    const { serverId } = await params; // Await params
     try {
         const session = await verifySession();
         if (!session) {
@@ -13,7 +11,7 @@ export async function GET(
         }
 
         const server = await prisma.server.findUnique({
-            where: { id: params.serverId },
+            where: { id: serverId },
             include: {
                 channels: {
                     orderBy: { position: 'asc' }
@@ -48,10 +46,8 @@ export async function GET(
     }
 }
 
-export async function DELETE(
-    request: Request,
-    { params }: { params: { serverId: string } }
-) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ serverId: string }> }) {
+    const { serverId } = await params; // Await params
     try {
         const session = await verifySession();
         if (!session) {
@@ -59,7 +55,7 @@ export async function DELETE(
         }
 
         const server = await prisma.server.findUnique({
-            where: { id: params.serverId }
+            where: { id: serverId }
         });
 
         if (!server) {
@@ -72,25 +68,25 @@ export async function DELETE(
                 prisma.message.deleteMany({
                     where: {
                         channel: {
-                            serverId: params.serverId
+                            serverId: serverId
                         }
                     }
                 }),
                 prisma.channel.deleteMany({
-                    where: { serverId: params.serverId }
+                    where: { serverId: serverId }
                 }),
                 prisma.invite.deleteMany({
-                    where: { serverId: params.serverId }
+                    where: { serverId: serverId }
                 }),
                 prisma.server.delete({
-                    where: { id: params.serverId }
+                    where: { id: serverId }
                 })
             ]);
         } 
         // If member, leave the server
         else {
             await prisma.server.update({
-                where: { id: params.serverId },
+                where: { id: serverId },
                 data: {
                     membersIDs: {
                         set: server.membersIDs.filter(id => id !== session.userId)

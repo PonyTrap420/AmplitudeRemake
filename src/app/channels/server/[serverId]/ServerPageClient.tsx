@@ -13,12 +13,12 @@ import ProfileContainer from "@/components/Profile/ProfileContainer";
 import { User } from "@/types/User";
 
 type ServerPageProps = {
-    params: { serverId: string };
+    serverId: string;
     currentUser: User;
 }
 
-export default function ServerPageClient({ params, currentUser }: ServerPageProps) {
-    const { server, isLoading } = useServer(params.serverId);
+export default function ServerPageClient({ serverId, currentUser }: ServerPageProps) {
+    const { server, isLoading } = useServer(serverId);
     const [selectedChannel, setSelectedChannel] = useState<string | null>(null);
     const { messages, isLoading: messagesLoading } = useChannelMessages(selectedChannel || '');
     const isOwner = server?.ownerId === currentUser.id;

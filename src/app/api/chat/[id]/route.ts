@@ -3,13 +3,13 @@ import { prisma } from '@/lib/prisma';
 import { verifySession } from '@/lib/dal';
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   try {
     const session = await verifySession()
 
     if (!session)
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const id = (await params).id;
     const { content, attachments } = await request.json();
 
     if ((!content || typeof content !== 'string') && (!attachments || attachments.length === 0)) {
@@ -39,14 +39,13 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 }
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   try {
    
     const session = await verifySession()
  
     if (!session)
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-    const id = (await params).id;
 
     const currentUserId = session.userId;
 
