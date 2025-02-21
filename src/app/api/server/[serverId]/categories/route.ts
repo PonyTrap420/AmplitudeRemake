@@ -4,8 +4,9 @@ import { verifySession } from '@/lib/dal';
 
 export async function POST(
     request: Request,
-    { params }: { params: { serverId: string } }
+    { params }: { params: Promise<{ serverId: string }> }
 ) {
+    const { serverId } = await params;
     try {
         const session = await verifySession();
         if (!session) {
@@ -13,7 +14,7 @@ export async function POST(
         }
 
         const server = await prisma.server.findUnique({
-            where: { id: params.serverId }
+            where: { id: serverId }
         });
 
         if (!server) {
@@ -33,7 +34,7 @@ export async function POST(
         const category = await prisma.category.create({
             data: {
                 name,
-                serverId: params.serverId
+                serverId: serverId
             }
         });
 
@@ -46,8 +47,9 @@ export async function POST(
 
 export async function DELETE(
     request: Request,
-    { params }: { params: { serverId: string } }
+    { params }: { params: Promise<{ serverId: string }> }
 ) {
+    const { serverId } = await params;
     try {
         const session = await verifySession();
         if (!session) {
@@ -57,7 +59,7 @@ export async function DELETE(
         const { categoryId } = await request.json();
 
         const server = await prisma.server.findUnique({
-            where: { id: params.serverId }
+            where: { id: serverId }
         });
 
         if (!server) {
@@ -87,8 +89,9 @@ export async function DELETE(
 
 export async function PATCH(
     request: Request,
-    { params }: { params: { serverId: string } }
+    { params }: { params: Promise<{ serverId: string }> }
 ) {
+    const { serverId } = await params;
     try {
         const session = await verifySession();
         if (!session) {
@@ -100,7 +103,7 @@ export async function PATCH(
         const category = await prisma.category.update({
             where: {
                 id: categoryId,
-                serverId: params.serverId
+                serverId: serverId
             },
             data: {
                 name

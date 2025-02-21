@@ -2,10 +2,8 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifySession } from '@/lib/dal';
 
-export async function GET(
-    request: Request,
-    { params }: { params: { channelId: string } }
-) {
+export async function GET(request: Request, { params }: { params: Promise<{ channelId: string }> }) {
+    const { channelId } = await params; // Await params
     try {
         const session = await verifySession();
         if (!session) {
@@ -14,7 +12,7 @@ export async function GET(
 
         const messages = await prisma.message.findMany({
             where: {
-                channelId: params.channelId,
+                channelId: channelId,
                 directMessage: false
             },
             include: {
@@ -39,10 +37,8 @@ export async function GET(
     }
 }
 
-export async function POST(
-    request: Request,
-    { params }: { params: { channelId: string } }
-) {
+export async function POST(request: Request, { params }: { params: Promise<{ channelId: string }> }) {
+    const { channelId } = await params; // Await params
     try {
         const session = await verifySession();
         if (!session) {
@@ -54,18 +50,19 @@ export async function POST(
         if ((!content || typeof content !== 'string') && (!attachments || attachments.length === 0)) {
             return NextResponse.json({ error: 'Invalid content or attachments required' }, { status: 400 });
         }
-        
+
+        const currentUserId = session.userId;
 
         const message = await prisma.message.create({
             data: {
-                content,
-                authorId: session.userId,
-                channelId: params.channelId,
-                pinned: false,
+                content: content,
+                authorId: currentUserId,
+                channelId: channelId,
+                directMessage: false,
+                timestamp: new Date(),
                 mentionEveryone: false,
-                mentions: [],
-                attachments: attachments,
-                embeds: { create: [] }
+                pinned: false,
+                attachments: attachments
             },
             include: {
                 author: {
@@ -79,7 +76,7 @@ export async function POST(
             }
         });
 
-        return NextResponse.json(message);
+        return NextResponse.json({ message }, { status: 201 });
     } catch (error) {
         console.error('Error creating message:', error);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
