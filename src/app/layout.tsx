@@ -36,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" style={{height:'100%'}}>
+    <html suppressHydrationWarning lang="en" style={{height:'100%'}}>
       <head><ColorSchemeScript defaultColorScheme="dark"/></head>
       <body style={{minHeight:'100%',display:'flex',justifyContent:'center',alignItems:'center'}}
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

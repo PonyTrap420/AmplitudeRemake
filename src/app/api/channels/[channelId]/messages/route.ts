@@ -81,4 +81,41 @@ export async function POST(request: Request, { params }: { params: Promise<{ cha
         console.error('Error creating message:', error);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
-} 
+}
+
+export async function DELETE(request: Request, { params }: { params: Promise<{ channelId: string }> }) {
+    const { channelId } = await params;
+    
+    try {
+        const session = await verifySession();
+        if (!session) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        const { messageId } = await request.json(); // Read messageId from body
+        if (!messageId) {
+            return NextResponse.json({ error: 'Message ID required' }, { status: 400 });
+        }
+
+        const message = await prisma.message.findUnique({
+            where: { id: messageId },
+        });
+
+        if (!message || message.channelId !== channelId) {
+            return NextResponse.json({ error: 'Message not found' }, { status: 404 });
+        }
+
+        if (message.authorId !== session.userId) {
+            return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+        }
+
+        await prisma.message.delete({
+            where: { id: messageId },
+        });
+
+        return NextResponse.json({ success: true }, { status: 200 });
+    } catch (error) {
+        console.error("Error deleting message:", error);
+        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    }
+}
