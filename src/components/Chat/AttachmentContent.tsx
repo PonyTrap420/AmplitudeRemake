@@ -6,9 +6,13 @@ export default function AttachmentContent({ urls }: { urls: string[] }) {
   const [opened, setOpened] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const isVideo = (url: string) => /\.(mp4|webm|ogg)$/i.test(url);
+
   const handleOpenModal = (index: number) => {
-    setCurrentIndex(index);
-    setOpened(true);
+    if (!isVideo(urls[index])) {
+      setCurrentIndex(index);
+      setOpened(true);
+    }
   };
 
   const handleCloseModal = () => setOpened(false);
@@ -18,17 +22,23 @@ export default function AttachmentContent({ urls }: { urls: string[] }) {
   return (
     <Box style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
       {urls.length >= 7 ? (
-        <Flex direction={'column'}>
-        <Button onClick={() => handleOpenModal(0)} variant='transparent' size='xs'>Click to view all content</Button>
-        <Box
-          maw={250}
-          mah={200}
-          pos="relative"
-          style={{cursor: "pointer", borderRadius: "8px", overflow: "hidden" ,}}
-          onClick={() => handleOpenModal(0)}
-        >
-          <Image src={urls[0]} alt="preview" style={{ width: "100%", height: "100%", objectFit: "cover", filter:'blur(4px)' }} />
-        </Box>
+        <Flex direction={"column"}>
+          <Button onClick={() => handleOpenModal(0)} variant="transparent" size="xs">
+            Click to view all content
+          </Button>
+          <Box
+            maw={250}
+            mah={200}
+            pos="relative"
+            style={{ cursor: "pointer", borderRadius: "8px", overflow: "hidden" }}
+            onClick={() => handleOpenModal(0)}
+          >
+            <Image
+              src={urls.find((url) => !isVideo(url)) || urls[0]}
+              alt="preview"
+              style={{ width: "100%", height: "100%", objectFit: "cover", filter: "blur(4px)" }}
+            />
+          </Box>
         </Flex>
       ) : (
         <Box
@@ -42,13 +52,26 @@ export default function AttachmentContent({ urls }: { urls: string[] }) {
           {urls.map((url, index) => (
             <Box
               key={index}
-              maw={250}
-              mah={200}
+              maw={300} // Increased max width for video
+              mah={250} // Increased max height for video
               pos="relative"
-              style={{ cursor: "pointer", borderRadius: "8px", overflow: "hidden" }}
+              style={{
+                cursor: isVideo(url) ? "default" : "pointer",
+                borderRadius: "8px",
+                overflow: "hidden",
+              }}
               onClick={() => handleOpenModal(index)}
             >
-              <Image src={url} alt={`attachment-${index}`} style={{height:urls.length==1?'100%':''}}/>
+              {isVideo(url) ? (
+                <video controls style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "8px" }}>
+                  <source src={url} type="video/mp4" />
+                  <source src={url} type="video/webm" />
+                  <source src={url} type="video/ogg" />
+                  Your browser does not support the video tag.
+                </video>
+              ) : (
+                <Image src={url} alt={`attachment-${index}`} style={{ height: urls.length === 1 ? "100%" : "" }} />
+              )}
             </Box>
           ))}
         </Box>
@@ -56,7 +79,10 @@ export default function AttachmentContent({ urls }: { urls: string[] }) {
 
       {opened && (
         <Modal
-          styles={{ inner: { left: 0, padding: 0, height: "100%" },content:{backgroundColor:'transparent',boxShadow:'none'} }}
+          styles={{
+            inner: { left: 0, padding: 0, height: "100%" },
+            content: { backgroundColor: "transparent", boxShadow: "none" },
+          }}
           opened={opened}
           onClose={handleCloseModal}
           size="auto"
@@ -65,13 +91,17 @@ export default function AttachmentContent({ urls }: { urls: string[] }) {
           withCloseButton={false}
         >
           <Box style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
-            {urls.length >= 7 && (
+            {urls.length > 1 && (
               <Button variant="transparent" onClick={handlePrev} size="lg">
                 <IconArrowLeft size={24} />
               </Button>
             )}
-            <Image src={urls[currentIndex]} alt={`modal-image-${currentIndex}`} style={{ maxWidth: "100%", maxHeight: window.screen.height / 2 }} />
-            {urls.length >= 7 && (
+            <Image
+              src={urls[currentIndex]}
+              alt={`modal-image-${currentIndex}`}
+              style={{ maxWidth: "100%", maxHeight: window.screen.height / 2 }}
+            />
+            {urls.length > 1 && (
               <Button variant="transparent" onClick={handleNext} size="lg">
                 <IconArrowRight size={24} />
               </Button>
