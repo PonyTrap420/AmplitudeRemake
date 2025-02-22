@@ -6,7 +6,15 @@ export default function AttachmentContent({ urls }: { urls: string[] }) {
   const [opened, setOpened] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const isVideo = (url: string) => /\.(mp4|webm|ogg)$/i.test(url);
+  // Function to extract the file extension from URL, ignoring query parameters
+  const getExtension = (url: string) => {
+    const extMatch = url.split(/[\?&#]/)[0].match(/\.(jpeg|jpg|gif|png|webp|mp4|webm|ogg)$/i);
+    return extMatch ? extMatch[0] : null;
+  };
+
+  const isVideo = (url: string) => {
+    return /\.(mp4|webm|ogg)$/i.test(getExtension(url) || "");
+  };
 
   const handleOpenModal = (index: number) => {
     if (!isVideo(urls[index])) {
@@ -96,11 +104,20 @@ export default function AttachmentContent({ urls }: { urls: string[] }) {
                 <IconArrowLeft size={24} />
               </Button>
             )}
-            <Image
-              src={urls[currentIndex]}
-              alt={`modal-image-${currentIndex}`}
-              style={{ maxWidth: "100%", maxHeight: window.screen.height / 2 }}
-            />
+            {isVideo(urls[currentIndex]) ? (
+              <video controls style={{ maxWidth: "100%", maxHeight: window.screen.height / 2 }}>
+                <source src={urls[currentIndex]} type="video/mp4" />
+                <source src={urls[currentIndex]} type="video/webm" />
+                <source src={urls[currentIndex]} type="video/ogg" />
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <Image
+                src={urls[currentIndex]}
+                alt={`modal-image-${currentIndex}`}
+                style={{ maxWidth: "100%", maxHeight: window.screen.height / 2 }}
+              />
+            )}
             {urls.length > 1 && (
               <Button variant="transparent" onClick={handleNext} size="lg">
                 <IconArrowRight size={24} />
