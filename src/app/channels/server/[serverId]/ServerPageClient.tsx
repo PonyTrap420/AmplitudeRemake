@@ -63,7 +63,7 @@ export default function ServerPageClient({ serverId, currentUser }: ServerPagePr
                             <ChatSkeleton />
                         ) : (
                             <>
-                                <ChatContent messages={messages || []} />
+                                <ChatContent messages={messages || []} channelId={currentChannel?.id} />
                                 <Space mih={70}></Space>
                                 <ChatInput user={currentUser} channelId={selectedChannel} />
                             </>
