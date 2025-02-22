@@ -29,16 +29,15 @@ export default function MessageBlock({ message, isFirst, onContextMenu }: { mess
     // Function to convert links into anchor tags or media
     const renderMessageContent = (content: string) => {
         const urlRegex = /https?:\/\/[^\s]+/g;
-        return content.split(urlRegex).reduce((acc, part, i) => {
+        const parts = content.split(urlRegex).map((part, i) => {
             const match = content.match(urlRegex)?.[i];
-            acc.push(<span key={`text-${i}`}>{part}</span>);
             if (match) {
                 if (isImage(match)) {
-                    acc.push(<AttachmentContent key={`image-${i}`} urls={[match]} />);
+                    return <AttachmentContent key={`image-${i}`} urls={[match]} />;
                 } else if (isVideo(match)) {
-                    acc.push(<AttachmentContent key={`video-${i}`} urls={[match]} />);
+                    return <AttachmentContent key={`video-${i}`} urls={[match]} />;
                 } else {
-                    acc.push(
+                    return (
                         <a 
                             key={`link-${i}`} 
                             href={match} 
@@ -51,8 +50,11 @@ export default function MessageBlock({ message, isFirst, onContextMenu }: { mess
                     );
                 }
             }
-            return acc;
-        }, [] as JSX.Element[]);
+            return <span key={`text-${i}`}>{part}</span>;
+        });
+
+        // If there are no links, just render the content as regular text
+        return urlRegex.test(content) ? parts : <Text className="select-text">{content}</Text>;
     };
 
     return (
@@ -69,7 +71,9 @@ export default function MessageBlock({ message, isFirst, onContextMenu }: { mess
             gap={15}
         >
             {isFirst ? (
-                <Avatar mt={message.attachments?.length !== 0 ? 5 : 0} size={40} className="hover:cursor-pointer" />
+                <Flex mt={3} style={{alignSelf:'stretch'}} h="100%">
+                    <Avatar mt={message.attachments?.length !== 0 ? 5 : 0} size={40} className="hover:cursor-pointer" />
+                </Flex>
             ) : (
                 <Text size="xs" className="opacity-0 group-hover:opacity-100" style={{ textWrap: 'nowrap' }} miw={40} maw={40}>
                     {date?.toLocaleTimeString('en-US', { timeStyle: 'short', hour12: true })}
@@ -82,7 +86,7 @@ export default function MessageBlock({ message, isFirst, onContextMenu }: { mess
                         <Text size="xs">{date?.toLocaleString('en-US')}</Text>
                     </Flex>
                 )}
-                <Text className="select-text">{renderMessageContent(message.content)}</Text>
+                {renderMessageContent(message.content)}
                 {message.attachments && <AttachmentContent urls={message.attachments} />}
             </Flex>
         </Flex>
