@@ -2,13 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { writeFile } from "fs/promises";
 import path from "path";
 import { randomUUID } from "crypto";
-import { put } from '@vercel/blob';
+import { put } from "@vercel/blob";
 
 // Directory where files will be saved locally if Blob Storage is not configured
 const uploadDir = path.join(process.cwd(), "public/uploads");
 
 // Ensure uploaded file is an image
 const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif"];
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 
 export async function POST(req: NextRequest) {
     try {
@@ -33,14 +34,18 @@ export async function POST(req: NextRequest) {
                 return NextResponse.json({ error: "Only images are allowed!" }, { status: 400 });
             }
 
+            if (file.size > MAX_FILE_SIZE) {
+                return NextResponse.json({ error: "File size must not exceed 2MB!" }, { status: 400 });
+            }
+
             const fileExtension = path.extname(file.name);
             const uniqueFilename = `${randomUUID()}${fileExtension}`;
 
             if (process.env.BLOB_READ_WRITE_TOKEN) {
                 // Use Vercel Blob Storage
                 const blob = await put(uniqueFilename, file, {
-                    access: 'public',
-                    addRandomSuffix: false // We're already using UUID
+                    access: "public",
+                    addRandomSuffix: false, // We're already using UUID
                 });
                 fileUrls.push(blob.url);
             } else {
@@ -54,7 +59,7 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({
             message: "Files uploaded successfully",
-            fileUrls
+            fileUrls,
         });
     } catch (error) {
         console.error("Upload error:", error);

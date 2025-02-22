@@ -1,9 +1,9 @@
 'use client'
 
 import { Message } from "@/types/Message";
-import {  Avatar,Text, Flex, Image, Button } from "@mantine/core";
-import { IconEye } from "@tabler/icons-react";
+import {  Avatar,Text, Flex } from "@mantine/core";
 import { useEffect, useState } from "react";
+import AttachmentContent from "./AttachmentContent";
 
 export default function MessageBlock({message,isFirst,onContextMenu} : {message:Message,isFirst:boolean,onContextMenu: (e: React.MouseEvent) => void })
 {
@@ -27,10 +27,7 @@ export default function MessageBlock({message,isFirst,onContextMenu} : {message:
             <Text className="select-text">{message.content}</Text>
             {message.attachments&&
                 <>
-                {message.attachments.length>1?
-                <Button variant='light' w={200} rightSection={<IconEye/>}>View Attachments</Button>:
-                <Image maw={400} src={message.attachments}></Image>
-                }
+                <AttachmentContent urls={message.attachments}/>
                 </>
             }
         </Flex>

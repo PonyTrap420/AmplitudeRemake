@@ -5,10 +5,10 @@ import { IconPencil, IconTrash } from "@tabler/icons-react";
 import { AttachmentType } from "./ChatInput";
 
 export default function Attachment({ attachment, handleRemove }: { attachment: AttachmentType, handleRemove:(id:string)=>void }) {
-  const [opened, setOpened] = useState(false); // State to control modal visibility
+  const [opened, setOpened] = useState(false);
 
-  const handleOpenModal = () => setOpened(true); // Function to open the modal
-  const handleCloseModal = () => setOpened(false); // Function to close the modal
+  const handleOpenModal = () => setOpened(true);
+  const handleCloseModal = () => setOpened(false);
   const url = URL.createObjectURL(attachment.file);
 
   return (
@@ -28,9 +28,9 @@ export default function Attachment({ attachment, handleRemove }: { attachment: A
         style={{
           borderRadius: "8px",
           overflow: "hidden",
-          cursor: "pointer", // Show pointer cursor on hover
+          cursor: "pointer",
         }}
-        onClick={handleOpenModal} // Open the modal when image is clicked
+        onClick={handleOpenModal}
       >
         <Image src={url} alt={attachment.file.name} />
       </Box>
@@ -46,17 +46,15 @@ export default function Attachment({ attachment, handleRemove }: { attachment: A
 
      {/* Modal for full-size image */}
      {opened?
-        <Modal
-          styles={{
-            inner: {left:0, padding: 0, height: "100%" }, // Remove padding and make inner fill the modal
-          }}
-          opened={opened}
-          onClose={handleCloseModal}
-          size="auto"
-          padding={0}
-          centered
-          withCloseButton={false} // Disable the close button for a cleaner look
-        >
+         <Modal
+         styles={{ inner: { left: 0, padding: 0, height: "100%" },content:{backgroundColor:'transparent',boxShadow:'none'} }}
+         opened={opened}
+         onClose={handleCloseModal}
+         size="auto"
+         padding={0}
+         centered
+         withCloseButton={false}
+       >
           <Box
             style={{
               display: "flex",
@@ -68,7 +66,7 @@ export default function Attachment({ attachment, handleRemove }: { attachment: A
             <Image
               src={url}
               alt={attachment.file.name}
-              style={{ maxWidth: "100%", maxHeight: "100%" }}
+              style={{ maxWidth: "100%", maxHeight: window.screen.height / 2 }} 
             />
           </Box>
         </Modal>:null}

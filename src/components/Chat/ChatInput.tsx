@@ -1,12 +1,10 @@
-'use client'
-
 import { Message } from "@/types/Message";
 import { User } from "@/types/User";
-import { Flex, TextInput, ActionIcon, Box, ScrollArea } from "@mantine/core";
+import { Flex, TextInput, ActionIcon, Box, ScrollArea, Loader, Text } from "@mantine/core";  // Import Loader
 import { useClickOutside } from "@mantine/hooks";
 import { IconGif, IconMoodHappyFilled } from "@tabler/icons-react";
 import axios from "axios";
-import EmojiPicker, { Theme } from "emoji-picker-react"
+import EmojiPicker, { Theme } from "emoji-picker-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { useSWRConfig } from "swr";
@@ -25,6 +23,8 @@ export type AttachmentType = {
     file: FileWithPath;
 }
 
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+
 export default function ChatInput({ channelId, user, otherUser }: ChatInputProps)
 {
     const { mutate } = useSWRConfig()
@@ -32,13 +32,20 @@ export default function ChatInput({ channelId, user, otherUser }: ChatInputProps
 
     const ref = useClickOutside(() => setPickerOpened(false));
     const [textValue, setTextValue] = useState("");
-    const params = useParams<{ id: string; }>()
+    const params = useParams<{ id: string; }>() 
 
     const [attachments, setAttachments] = useState<AttachmentType[]>([]);
     const [isUploading, setIsUploading] = useState(false);
 
     const handleDrop = (newFiles: FileWithPath[]) => {
-        const filesWithId = newFiles.map((file) => ({
+        const validFiles = newFiles.filter((file: FileWithPath) => {
+            if (file.size > MAX_FILE_SIZE) {
+                window.alert(`File ${file.name} is too large! Max size is 2MB.`);
+                return;
+            }
+            return file;
+        });
+        const filesWithId = validFiles.map((file) => ({
           id: crypto.randomUUID(),
           file,
         }));
@@ -50,6 +57,7 @@ export default function ChatInput({ channelId, user, otherUser }: ChatInputProps
     };
 
     const uploadFiles = async (files: AttachmentType[]) => {
+        setIsUploading(true);
         const formData = new FormData();
         
         files.forEach((file) => {
@@ -76,8 +84,7 @@ export default function ChatInput({ channelId, user, otherUser }: ChatInputProps
             : "Message";
 
     const handleKeyPress = async (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Enter' && (textValue.trim() !== ''|| attachments.length > 0)) {
-            setIsUploading(true);
+        if (event.key === 'Enter' && (textValue.trim() !== '' || attachments.length > 0)) {
             const endpoint = channelId ? `/api/channels/${channelId}/messages` : `/api/chat/${params.id}`;
 
         try {
@@ -133,21 +140,36 @@ export default function ChatInput({ channelId, user, otherUser }: ChatInputProps
     };
 
     return <>
-      <Flex gap={5} direction={'column'} p={20} pt={0} align='start' pos='absolute' bottom={0} mih={attachments.length!=0?275:70} h={attachments.length!=0?275:70} w="100%"> 
-            {attachments.length!=0?
-            <ScrollArea scrollbars={'x'} h={200} w={"100%"} p={10} className="rounded" bg={'var(--mantine-color-dark-4)'}>
+      <Flex gap={5} direction={'column'} p={20} pt={0} align='start' pos='absolute' bottom={0} mih={attachments.length != 0 ? 275 : 70} h={attachments.length != 0 ? 275 : 70} w="100%"> 
+            {isUploading && <Flex gap={20} style={{zIndex:2}} pos='absolute' justify="center" align="center" top="30%" left="45%">
+                    <Text>Uploading...</Text>
+                     <Loader color='blue' size="lg" variant="dots" />
+                    </Flex>}
+            {attachments.length != 0 ?
+            <ScrollArea style={{filter:isUploading?'blur(4px)':'', zIndex:1}} scrollbars={'x'} h={200} w={"100%"} p={10} className="rounded" bg={'var(--mantine-color-dark-4)'}>
                     <Flex gap={15}>
-                    {attachments.map((attachment,index) => (
+                    {attachments.map((attachment, index) => (
                         <Attachment key={index} attachment={attachment} handleRemove={removeAttachment} />
                     ))}
                     </Flex>
-            </ScrollArea>:null}
-            <TextInput disabled={isUploading} onKeyDown={handleKeyPress} onChange={(event) => setTextValue(event.currentTarget.value)} value={textValue} styles={{input:{backgroundColor:'var(--mantine-color-dark-4)'}}} size='md' w="100%" leftSection={
-                <Attachments onDrop={handleDrop}/>
-            } placeholder={placeholder}/>
+            </ScrollArea> : null}
+            
+            <TextInput
+                disabled={isUploading}
+                onKeyDown={handleKeyPress}
+                onChange={(event) => setTextValue(event.currentTarget.value)}
+                value={textValue}
+                styles={{ input: { backgroundColor: 'var(--mantine-color-dark-4)' } }}
+                size='md'
+                w="100%"
+                leftSection={<Attachments onDrop={handleDrop} />}
+                placeholder={placeholder}
+            />
+          
+
             <Flex right={25} bottom={29} bg={'dark.4'} pos='absolute' miw={80}>
-                <ActionIcon h={40} w={40}  variant='transparent'><IconGif size={25}/></ActionIcon>
-                <ActionIcon onClick={()=>setPickerOpened(true)} h={40} w={40}  variant='transparent'><IconMoodHappyFilled size={25}/></ActionIcon>       
+                <ActionIcon h={40} w={40} variant='transparent'><IconGif size={25}/></ActionIcon>
+                <ActionIcon onClick={()=>setPickerOpened(true)} h={40} w={40} variant='transparent'><IconMoodHappyFilled size={25}/></ActionIcon>       
             </Flex>
         </Flex>
         

@@ -11,7 +11,6 @@ export default function Attachments(props: Partial<DropzoneProps>) {
             if (item.type.startsWith("image")) {
               const file = item.getAsFile();
               if (file) {
-                console.log(file)
                 props.onDrop?.([file as FileWithPath]); // ✅ Safe function call
               }
             }
