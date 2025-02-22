@@ -12,22 +12,21 @@ const fetchChat = async (url: string, id: string|unknown) => {
   return response.data;
 };
 
-export default function ChatContent({ messages = [] }: { messages?: Message[] }) {
+export default function ChatContent({ messages = [], channelId }: { messages?: Message[], channelId?:string }) {
   const params = useParams();
-  const isServerChannel = 'serverId' in params;
   
   // Only fetch for direct messages, not server channels
   const { data, error } = useSWR(
-    !isServerChannel ? [`/api/chat/`, params.id] : null,
+    !channelId ? [`/api/chat/`, params.id] : null,
     ([url, id]) => fetchChat(url, id),
     { refreshInterval: 2000 }
   );
 
   if (error) return <div>Failed to load messages</div>;
-  if (!isServerChannel && !data) return <ChatSkeleton />;
+  if (!channelId && !data) return <ChatSkeleton />;
 
   // Use passed messages for server channels, data.messages for direct messages
-  const displayMessages = isServerChannel ? messages : (data?.messages || []);
+  const displayMessages = channelId ? messages : (data?.messages || []);
 
-  return <Chat messages={displayMessages} />;
+  return <Chat messages={displayMessages} channelId={channelId} />;
 }
